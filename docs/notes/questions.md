@@ -1,6 +1,6 @@
 # Machine Learning Concepts Q&A
 
-From CS109a Introduction to Data Science @ FAS Harvard
+Focusing on Q&A, from CS109a Introduction to Data Science @ FAS Harvard
 
 ## 1. Regression
 
