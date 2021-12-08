@@ -107,9 +107,9 @@
 
 11. **What metrics can be used to evaluate a regression task?**
 
-		* <u>Mean absolute error</u> (MAE)
-		* <u>Mean squared error</u> (MSE)
-		* <u>Root mean squared error</u> (RMSE)
+	* <u>Mean absolute error</u> (MAE)
+	* <u>Mean squared error</u> (MSE)
+	* <u>Root mean squared error</u> (RMSE)
 
 11. **What’s the trade-off between bias and variance?**
 
