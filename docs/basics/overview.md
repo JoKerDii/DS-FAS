@@ -1,5 +1,5 @@
-# CS109 Notes
+# DS Notes
 
-This is Di's notebook of "**CS109a Introduction to Data Science**" FAS@Harvard.
+This is Di's notebook of **Data Science Courses** @Harvard.
 
 ![intro](../assets/images/catoverview.jpg)

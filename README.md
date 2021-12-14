@@ -1,4 +1,6 @@
-# CS109a-FAS
+# DS-FAS
+
+## CS109a
 
 Some useful code:
 

@@ -1,8 +1,7 @@
-- CS109a Introduction to Data Science
+- Data Science
   - [Overview](basics/overview.md)
-  - Lecture Notes (Q&A based)
+  - Lecture Notes (Fall1 2021)
     - [Notes](notes/questions.md)
-  - [Useful Code](notes/code.md)
   - Others
     - [Notes](notes/MLnotes.md)
 
