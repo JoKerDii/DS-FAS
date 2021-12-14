@@ -1,7 +1,5 @@
 # Machine Learning Concepts Q&A
 
-Focusing on Q&A, from CS109a Introduction to Data Science @ FAS Harvard
-
 ## 1. Regression
 
 * **We have had a train-test split. Why we need a validation set?** 
