@@ -1,4 +1,4 @@
-# ML Interview Questions
+# Interview Questions
 
 1. **What are the main assumptions of a linear regression? what are the most common estimation techniques for linear regression?**
 

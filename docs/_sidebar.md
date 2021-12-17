@@ -1,7 +1,10 @@
 - Data Science
   - [Overview](basics/overview.md)
-  - Lecture Notes (Fall1 2021)
-    - [Notes](notes/questions.md)
-  - Others
-    - [Notes](notes/MLnotes.md)
-
+  - Lecture Notes (Q&A)
+    - [Fall 1 2021](notes/questions.md)
+  - Interview Notes
+    - [ML Interview Notes](notes/MLnotes.md)
+  - DS Competition Notes
+    - [Preprocessing](notes/competition.md)
+  - SQL Note
+    - [Code](notes/SQLnotes.md)
