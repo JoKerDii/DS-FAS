@@ -331,4 +331,34 @@
 
   Both bagging and boosting can be extended to regression tasks. To apply bagged regression trees, we construct B regression trees using B bootstrapped training sets and then average the resulting prediction. To apply boosted regression trees, we first fit a decision tree to the residuals from the model as the response. We then add this new decision tree into the fitted function in order to update the residuals. By fitting small trees to the residuals, we slowly improve the target in areas where it does not perform well.
 
-* 
+* **Difference between ensemble methods and mixture of experts?**
+
+  Ensemble methods and mixture of experts combine models in order to obtain a more accurate and / or more robust model.
+
+  * <u>Ensemble methods</u> combines models cooperatively
+
+    * Homogeneous models
+
+      * Voting and averaging
+      * Bagging and boosting
+
+    * Heterogeneous models
+
+      * Blending
+
+        Independent, parallel, heterogeneous weak learners, by training a meta-model to output a prediction - less bias
+
+      * Stacking
+
+        Similar to blending, except each model is now used to make out of distribution predictions
+
+  * <u>Mixture of experts</u> combines models by specialization
+
+    Uses multiple simple learners, each of which specializes on a different part of the data, plus a manager model that will decide which specialist to use for each input data.
+
+    Good if the dataset contains several different regimes which have different relationships between input and output. Covers different input regions with different learners.
+
+    Learning involves learning the parameters of each expert and the parameters of the gating network.
+
+    * Heterogeneous models
+      * Experts and (softmax) gating network 

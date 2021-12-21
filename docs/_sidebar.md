@@ -7,4 +7,6 @@
   - DS Competition Notes
     - [Preprocessing](notes/competition.md)
   - SQL Note
-    - [Code](notes/SQLnotes.md)
+    - [Part 1](notes/SQLnotes.md)
+    - [Part 2](notes/SQLnotes2.md)
+    - [Part 3](notes/SQLnotes3.md)
