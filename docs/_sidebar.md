@@ -5,7 +5,11 @@
   - Interview Notes
     - [ML Interview Notes](notes/MLnotes.md)
   - DS Competition Notes
-    - [Preprocessing](notes/competition.md)
+    - [Preprocessing](notes/01_preprocessing.md)
+    - [EDA](notes/02_eda.md)
+    - [Metrics](notes/03_metrics.md)
+    - [Hyperparameter Tuning](notes/04_hyperparameter.md)
+    - [Trick&Tips](notes/05_tips.md)
   - SQL Note
     - [Part 1](notes/SQLnotes.md)
     - [Part 2](notes/SQLnotes2.md)
