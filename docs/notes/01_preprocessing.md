@@ -1,4 +1,4 @@
-# DS Competitions - Feature Preprocessing
+# Data Preprocessing
 
 Features: numeric, categorical, ordinal, datetime, coordinates
 

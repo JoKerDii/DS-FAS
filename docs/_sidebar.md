@@ -9,8 +9,10 @@
     - [EDA](notes/02_eda.md)
     - [Metrics](notes/03_metrics.md)
     - [Hyperparameter Tuning](notes/04_hyperparameter.md)
-    - [Trick&Tips](notes/05_tips.md)
-  - SQL Note
+    - [General Trick & Tips](notes/05_tips.md)
+    - [Features Engineering](notes/06_features.md)
+    - [Ensembling](notes/07_ensembling.md)
+  - SQL Notes
     - [Part 1](notes/SQLnotes.md)
     - [Part 2](notes/SQLnotes2.md)
     - [Part 3](notes/SQLnotes3.md)

@@ -71,12 +71,6 @@
     * Vowpal Wabbit
       * FTRL
 
-
-
-## Advanced features
-
-## Ensembling methods
-
 ## Resources
 
 * Sklearn Grid Search [[link](https://scikit-learn.org/stable/modules/grid_search.html)]

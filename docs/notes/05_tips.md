@@ -7,6 +7,11 @@
     * For 2-fold memory saving
   * Large datasets can be processed in chunks.
 
+* Feature engineering
+
+  * See kaggler: cpmp, raddar, giba dmitry larko. How they deal with tabular data (with excel).
+  * `rapids.ai` for tabular data
+
 * Performance validation
 
   * Use train-test split rather than full cross validation loop
