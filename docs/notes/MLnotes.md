@@ -195,7 +195,17 @@
 
     * SVMs and decision trees are discriminative because they learn explicit boundaries between classes. SVM is a maximal margin classifier, meaning that it learns a decision boundary that maximizes the distance between samples of the two classes, given a kernel. The distance between a sample and the learned decision boundary can be used to make the SVM a "soft" classifier. DTs learn the decision boundary by recursively partitioning the space in a manner that maximizes the information gain (or another criterion).
 
-15. 
+26. **When to use One-hot encoding vs Label encoding?**
+
+    * Use One-hot encoding when:
+
+      The categorical feature is not ordinal. The values are close to each other in the label encoding corresponding to target values that are not close (non-linear).
+
+    * Use Label encoding when:
+
+      The categorical feature is ordinal. We can come up with a label encoder that assigns close labels to similar categories. The number of categorical features is huge. 
+
+      Decision trees and their derivatives, including regression trees and tree ensembles like random forests, are surprisingly robust to categorical variables that are not processed as such. So if the categorical variable is nominal, we do not need to encode it.
 
 # DS Interview Questions
 
