@@ -1,10 +1,11 @@
 - Data Science
   - [Overview](basics/overview.md)
   - Lecture Notes (Q&A)
-    - [Fall 1 2021](notes/questions.md)
+    - [Fall 2021](notes/questions.md)
+    - [Spring 2022](notes/questions1.md)
   - Interview Notes
     - [ML Interview Notes](notes/MLnotes.md)
-  - DS Competition Notes
+  - DS Project Notes
     - [Preprocessing](notes/01_preprocessing.md)
     - [EDA](notes/02_eda.md)
     - [Metrics](notes/03_metrics.md)
