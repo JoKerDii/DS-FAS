@@ -225,4 +225,515 @@
          $$
          Gap(K) \geq Gap(K+1) - s_{K + 1}
          $$
-         
+  
+* **Compare the two types of methods to choose the optimal number of clusters in terms of performance.**
+
+  * Both elbow method and average silhouette method measure global clustering characteristics only, and are informal approaches
+  * Gap statistic is a more principled approach to choosing cluster sizes. It terns out to result in more conservative clusterings (fewer clusters), but does not perform as reliably when the clusters overlap.
+
+* **What is DBSCAN and how it works?**
+
+  Density-based clustering algorithm (DBSCAN). 
+
+  * Can find any shape of clusters. Can identify dense region of observations.
+  * Identifies observations that do not belong to clusters as outliers.
+  * Does not require specifying the number of clusters (like hierarchical clustering).
+  * Can be used for predicting cluster membership for new data.
+
+  DBSCAN requires two parameters to implement:
+
+  * $\epsilon$: the radius of a neighborhood around an observation.
+    * Compute kth (k = MinPts) nearest neighbor distance for each point. Plot the distance in sorted order. Look for a bend ('knee') in the plot, and use the distance at the knee as the choice.
+  * MinPts: the minimum number of points within an $\epsilon$ radius of an observation to be considered a 'core' point.
+    * Default 5, at least 3 to produce non-trivial clustering. 5-6 is sufficient most of the time.
+    * Larger values may be better fro large data sets, for noisy data, or for data that contain repeats.
+
+  Three types of points defined in DBSCAN algorithm:
+
+  * <u>Core points</u>: observations with MinPts total observations within an $\epsilon$ radius.
+  * <u>Border points</u>: observations that are not core points, but are within $\epsilon$ of a core point.
+  * <u>Noise points</u>: everything else.
+
+  Two terms defined in DBSCAN algorithm:
+
+  * <u>Density-reachable</u>: point A is density reachable from point B if there is a set of core points leading from B to A. (B must be a core point, A can be a core or border point.)
+    * Not symmetric: border point of pre core point is the core point of the next; if B is not a core point, then A may not be density reachable from B even if B is density reachable from A. (A and B are not necessarily core points. )
+  * <u>Density-connected</u>: two points A and B are density connected if there is a core point C such that both A and B are density reachable from C.
+    * A density based cluster is defined as a group of density connected points.
+
+## 2. Bayesian Statistics
+
+* **What is the main difference between classical statistics and bayesian statistics?**
+
+  * The classical statistics and bayesian statistics are founded on different definition of probability.
+
+    * <u>Frequency definition of probability</u> where classical / frequentist statistics founded on:
+      * Probability of an event is its <u>long-run frequency</u> of occurrence. 
+      * This definition is useful for describing the likelihood of potentially observable data.
+      * Statistics founded on the Frequentist definition of probability can only assign probabilities to future data or potentially observable quantities.
+
+    * <u>Subjective definition of probability</u> where bayesian statistics founded on:
+      * Probability of an event is one's <u>degree of belief</u> that the event will occur. 
+        * This definition is useful for quantifying beliefs about non-data events (but also data events).
+        * Statistics founded on the subjective definition of probability can consider probabilities of values of unknown parameters (as well as values of potentially observable quantities).
+
+    Classical and Bayesian statistics coincides much more when data is large, because when data is large, prior information becomes less important.
+
+  * A main difference operationally between classical methods and bayesian method is the incorporation of a prior distribution.
+
+* **What is the benefits of bayesian statistics?**
+
+  Given a probability model, bayesian analysis makes full use of all the data. 
+
+  Statistical inferences that are unacceptable must come from inappropriate modeling assumptions, not a problem in the underlying inferential mechanism.
+
+  Awkward problems that Frequentists face (e.g. choice of estimators, adjustments for certain types of data) do not arise in Bayesians
+
+  Modern computational methods (MCMC etc) enables fitting even complex data models.
+
+* **What is Bayes Rule?**
+  $$
+  \begin{aligned}
+  p(\theta|\bold{y}) &= {p(\theta) p(\bold{y} | \theta) \over \int p(\theta) p(\bold{y} | \theta)d\theta} = {p(\theta) p(\bold{y} | \theta) \over p(\bold{y})}\\
+  & \propto p(\theta)p(\bold{y}|\theta) \propto p(\theta) L(\theta | \bold{y})
+  \end{aligned}
+  $$
+  Poesterior $\propto$ Prior $\times$ Likelihood 
+
+* **What is the key idea of bayesian statistics?**
+
+  In bayesian statistics, all quantities (data, unknown parameters) have probability distributions to describe uncertainty.
+
+  * <u>Parameters</u>: there is a probability distribution $p(\theta)$ called 'priori' to describe uncertainty in model parameters. The parameter is not random but a fixed value. The <u>prior</u> distribution of the unknown parameters represents the state of knowledge prior to observing the data.
+  * <u>Data</u>: observations obtained from a data-generating mechanism are assumed to follow a probability distribution $p(\bold{y}|\theta)$. This is called <u>likelihood</u> function $p(y|\theta)= L(\theta|\bold{y})$ , which is the probability of the data (probability density for continuous outcomes) conditional on the parameters, viewed as a function of the parameters.
+
+* **How to choose prior distribution?**
+
+  * There are two types of prior distributions:
+    * <u>Informative prior distribution</u>: use knowledge and expertise to construct  a prior distribution that properly reflects prior beliefs about the unknown parameters
+    * <u>Non-informative prior distribution</u>: choose a distribution objectively, acting as though no prior knowledge about the parameters exists before observing the data. Non-informative prior distributions are termed 'vague', 'diffuse', and 'objective'.
+  * Comparison:
+    * The best and most scientific approach would be to construct a defensible informative prior distribution. However, someone would argue that informative prior distributions are not objective or scientific because different Bayesians could given different priors and end up with different posteriors.
+    * It is often desirable to have prior distributions that 1) formally express ignorance and 2) can be viewed as default choices when no prior knowledge is available. A objective prior distribution could assign 'equal probability' to all values of the parameters, and so the likelihood could overwhelm the prior density with even small amounts of data. However, the problems are 1) often there is no unique non-informative prior distribution, 2) it's hard to satisfy that any method for constructing a non-informative prior distribution should be invariant to the scale of the parameter, 3) common methods for constructing non-informative prior distributions result in 'improper' probability distributions.
+
+* **What is the main goal of bayesian inference?**
+
+  The main goal is to 1) <u>obtain the posterior distribution of the unknown parameters</u>. It is the probability distribution of the unknown parameters conditional on the observed data. It is the probability distribution that describes the state of knowledge about the parameters once the data have been observed. 
+
+  And then 2) <u>study the posterior distribution, or derive summaries from the posterior distribution</u>. The summary includes:
+
+  * Posterior mean $E(\theta | y)$.
+
+  * Posterior mode (value of $\theta$ that maximizes $p(\theta|\bold{y})$).
+
+  * Central posterior interval for $\theta$. (interval incorporates 95% probability of $p(\theta | \bold{y})$).
+
+    (Note: classical statistics usually assume a known distribution so the confidence interval (used by frequentist in classical statistics) is usually wider than central posterior interval)
+
+  * Highest posterior density (HPD) region for $\theta$ - shortest interval with specified probability. 
+
+* **What are steps of performing bayesian analysis?**
+
+  1. Formulate a probability model for the data.
+
+  2. Decide on a prior distribution for the unknown model parameters.
+
+     (Note: usually improper prior distribution lead to proper posterior distributions, but one needs to check. A proper prior distribution always leads to a proper posterior distribution.)
+
+  3. Observe the data, and construct the likelihood function based on the data.
+
+     (Note: the likelihood function is the joint probability of the data.)
+
+  4. Determine the posterior distribution 
+
+     (Note: posterior = prior + likelihood, obtained by bayes rule. Usually the normalizing constant cannot be determined analytically.)
+
+  5. Summarize important features of the posterior distribution, or calculate quantities of interest based on the posterior distribution.
+
+* **Why bayesian models can be seen as generative models?**
+
+  * A g<u>enerative model</u> is a probabilistic specification to generate data, which contains
+
+    * Parameters $\theta$
+    * Features (or predictors or covariates) $x$
+    * Labels (or the outcome variable) $y$
+
+  * In bayesian framework we assume
+
+    * Prior distribution $\theta \sim p(\theta)$
+    * Data probability model $y|\theta, x \sim p(y | \theta, x)$
+
+    So we can generate or simulate outcomes by
+
+    * Generate a value $\theta$ from $p(\theta)$
+    * Given $\theta$ and known covariates $x$, simulate an outcome $y$ from $p(y | \theta ,x)$ ( $p(y | \theta ,x)$ is called <u>prior predictive distribution</u>.)
+
+* **Why bayesian models can be seen as predictive models?**
+
+  * One of the strength of bayesian is the ability to produce model-based predictions that accounts for the uncertainty in parameter inferences.
+
+  * We can determine $p(\tilde{y}| \bold{y})$, the probability distribution for a new value $\tilde{y}$ given the data we already analyzed. The distribution is called <u>posterior predictive distribution</u>.
+
+  * Note that $\theta$ is no longer in the expression - the posterior predictive distribution "averages out" the uncertainty about $\theta$ over the posterior distribution.
+
+  * Analytic solution:
+    $$
+    p(\tilde{y}|\bold{y}) = \int p(\tilde{y}|\theta)p(\theta | \bold{y}) d\theta
+    $$
+    This can be computed via simulation:
+
+    1. Generate 10000 simulated parameter values $\theta^{(1)}, ...\theta^{(10000)}$ from the posterior distribution.
+    2. For each $j = 1, ..., 10000$ separately, generate a value of $\tilde{y}^{(j)}$ from the probability model with parameter value $\theta^{(j)}$.
+    3. Summarize features (mean, etc) of the 10000 values $\tilde{y}^{(1)}, ...,\tilde{y}^{(10000)}$ for predictions.
+
+* **What are the challenges of Bayesian approach in more complex modeling situation?**
+
+  * The posterior density for most real-life models can be complex expressions.
+  * The posterior density cannot be written exactly because the normalizing constant cannot be evaluated.
+  * Even we can write down the posterior density exactly, it is difficult to summarize using standard analytic tools.
+
+* **Why we use Bayes theorem instead of conditional probability?**
+
+  Conditional probability is the likelihood of an outcome occurring, based on a previous outcome occurring. Bayes' theorem provides a way to  revise existing predictions or theories (update probabilities) given new or additional evidence.
+
+* **What are the approaches used to summarize posteriors?**
+
+  * Quadrature methods
+  * (Direct) Monte Carlo (MC) simulation
+  * Indirect MC methods: 
+    * Rejection sampling
+    * Weighted bootstrap
+  * Monte Carlo Markov Chain (MCMC) simulation
+    * Random Walk Metropolis (RWM) sampling
+    * Gibbs sampling
+
+* **What is quadrature method and how it works to summarize posterior?**
+
+  * The basic idea is to replace $p(\theta| \bold{y})$ with an approximating discrete mass function $\tilde{p}(\theta | \bold{y})$, obtain posterior summaries through the approximating discrete distribution. 
+  * A common version is <u>Gauss-Hermite Quadrature</u>. 
+    * Choose the spacing of the values of $\theta$ according to a normal distribution along with relevant weights.
+    * Requires computation to approximate the normal mean and variance.
+    * For multivariate parameter $\theta$, the quadrature spacing is typically accomplished one variable at a time.
+  * Problems results in limited applicability:
+    *  The quadrature grid of values of $\theta$ may not adequately represent the true distribution of $\theta$.
+    * With multivariate $\theta$, it's very difficult to obtain reasonable representation of discrete values in multivariate space (curse of dimensionality) without making the computation unwieldly.
+
+* **What is Monte Carlo simulation and how it works to summarize posterior distribution?**
+
+  * MC simulation is valid to summarize posterior distribution because <u>summarizing computer-simulated values from the posterior distribution is a legitimate alternative to analytic summaries</u>. 
+  * Calculate the sample-version of the distribution from the simulated sample. Usually need to simulate a very large sample in order to precisely approximate the generating distribution.
+  * Steps:
+    1. Simulate 10000 values from the posterior distribution
+    2. Report sample summaries from the distribution of 10000 simulated values
+
+* **What are Indirect Monte Carlo methods and how  they work?**
+
+  Indirect MC methods include rejection sampling and weighted bootstrap.
+
+  * <u>Rejection sampling</u>:
+
+    * Suppose we are going to simulate values from density $h(\theta)$ but cannot do it directly. $h(\theta)$ can be unnormalized $\int h(\theta) d\theta = c \neq 1$. Suppose we can simulate directly from density $g(\theta)$. We need to ensure that there exists constant $M > 0$ such that $h(\theta) / g(\theta) \leq M ~~\forall \theta$.
+
+    * To obtain a simulated $\theta$ from $h(\theta)$, do
+      1. Simulate $\theta$ from $g(\theta)$.
+      2. Simulate $U$ from a uniform distribution on $(0,1)$.
+      3. If $U \leq h(\theta)/ Mg(\theta)$, then accept $\theta$. Otherwise, repeat steps 1-3.
+    * Most efficient way of choosing $M$: choose smallest $M$ such that the normal curve $Mg(\theta)$ stays above the $h(\theta)$. Because when $Mg(\theta)$ is too higher than $h(\theta)$, probability of keeping candidate $\theta$ is lower so the method will be inefficient - we waste computation and time to reject a lot of $\theta$.
+
+  * <u>Weighted bootstrap</u>
+
+    Suppose we cannot readily produce an $M$ such that $h(\theta) / g(\theta) \leq M ~~ \forall \theta$. We can do:
+
+    1. Simulate $K$ draws $\{\theta_1, ..., \theta_K\}$ from $g(\theta)$.
+    2. For each $k=1, ..., K$, compute $w_k = h(\theta_k)/ g(\theta_k)$, and let $q_k = w_k / \sum^K_{j=1}w_j$, the normalized values of the $w_k$.
+    3. Now simulate $\theta$ from the discrete distribution of values $\{\theta_1, ..., \theta_K\}$ with probabilities $\{q_1, ..., q_K\}$.
+
+    The resulting $\theta$ is approximately distributed according to $h(\theta)$, with approximation improving as $K$ increases. This procedure aka <u>sampling / importance resampling (SIR)</u>
+
+* **How Indirect Monte Carlo methods work in summarizing posterior?**
+
+  * <u>Bayesian rejection sampling</u>
+
+    Suppose we have prior $p(\theta)$, likelihood $L(\theta | y)$, and posterior $p(\theta | \bold{y})$. Let $h(\bold{\theta}) = p(\bold{\theta}) L(\bold{\theta} | \bold{y})$ (a constant factor of the posterior density), and $g(\bold{\theta}) = p(\bold{\theta})$. Let $M$ be the smallest value for which $h(\theta) / g(\theta) \leq M~~ \forall \theta$. i.e.
+    $$
+    {h(\theta)\over g(\theta)}= {p(\theta) L(\theta | \bold{y})\over p(\theta)} = L(\theta | \bold{y}) \leq M
+    $$
+    Thus choose $M = L(\widehat{\theta}|\bold{y})$ where $\widehat{\theta}$ is the MLE. Then do
+
+    1. Simulate $\theta$ from $p(\theta)$.
+    2. Generate $U$ from a uniform distribution over $(0,1)$.
+    3. If $U \leq h(\theta) / Mg(\theta) = L(\theta | \bold{y}) / L(\widehat{\theta}| \bold{y})$, then accept $\theta$ as a simulated value from $p(\theta | \bold{y})$, otherwise repeat.
+
+  * <u>Bayesian weighted bootstrap</u>
+
+    Let $h(\bold{\theta}) = p(\bold{\theta}) L(\bold{\theta} | \bold{y})$, and $g(\bold{\theta}) = p(\bold{\theta})$. 
+
+    1. Simulate $\{\theta_1, ..., \theta_K\}$ from $p(\theta)$.
+    2. For each $k=1, ..., K$, compute $w_k = h(\theta_k)/ g(\theta_k) = L(\theta_k | \bold{y})$, and let $q_k = w_k / \sum^K_{j=1}w_j = L(\theta_k | \bold{y})/ \sum^K_{i=1} L(\theta_j | \bold{y})$, the normalized values of the $w_k$.
+    3. Now simulate $\theta$ from the discrete distribution of values $\{\theta_1, ..., \theta_K\}$ with probabilities $\{q_1, ..., q_K\}$.
+
+* **What are the problems of Indirect Monte Carlo methods?**
+
+  * The problem is they are <u>computational inefficient</u>. 
+
+    * They work well when $h(\theta) / g(\theta) = L(\theta | \bold{y})$ is nearly constant with respect to $\theta$. 
+
+    * However, in real world, almost all posterior $p(\theta | \bold{y})$ is peak (because when data is large, the likelihood is peak). So with the indirect MC methods, almost all $\theta$ are from the peak point.
+
+    * When $h(\theta) / g(\theta) = L(\theta | \bold{y})$ is not constant, then
+      * It could take ages in rejection sampling before a $\theta$ is accepted.
+        * The probabilities $\{q_1, ..., q_K\}$ in the weighted bootstrap could be terribly skewed so that the discrete approximation to $p(\theta | \bold{y})$ is horrible.
+
+  * Another problem is these methods require proper prior. If we assume an improper prior distribution, we cannot simulate from $p(\theta)$.
+
+* **What is Monte Carlo Markov Chain (MCMC) simulation and how it works?**
+
+  The key idea is to <u>create a Markov chain whose stationary distribution is $p(\theta | \bold{y})$</u>. Values are computer-simulated from the Markov Chain.
+  $$
+  \theta^k \sim P(\theta | y, \theta^{k-1}), \theta^k \xrightarrow[]{k \rightarrow \infty} p(\theta | \bold{y})
+  $$
+  There are two ways to construct a Markov Chain:
+
+  * <u>Random Walk Metropolis (RWM) sampling</u>
+
+    Idea: We want to sample vectors of $\theta$ from posterior density of d-dimensional $\theta$: $p(\theta | \bold{y})$.
+
+    Steps:
+
+    1. Pick arbitrary starting vector $\theta_1$
+
+    2. For $j = 1,2,..$
+
+       a. Simulate d-dimensional vector $\Delta_j$ (the proposed 'jump') from pre-specified distribution $\tilde{p}(\Delta)$. ($\tilde{p}(\Delta)$ is usually bell-shaped, equal possibility of directions, can be tuned)
+
+       b. Evaluate the proposal acceptance probability
+       $$
+       \alpha(\theta_j, \Delta_j) = \min \left(1, {p(\theta_j + \Delta_j | \bold{y})\over p(\theta_j | \bold{y})}\right)
+       $$
+       c. let
+       $$
+       \theta_{j+1} = \begin{cases} \theta_j, &\text{with probability } 1-\alpha(\theta_j, \Delta_j) \\
+       \theta_j + \Delta_j, & \text{with probability } \alpha(\theta_j, \Delta_j)\end{cases}
+       $$
+
+    Interpretation:
+
+    * If uphill proposals (goes to local maximum) are always accepted. Intuitively, if $p(\theta_j + \Delta_j | \bold{y}) \geq p(\theta_j | \bold{y})$, $p(\text{move}) =1$. 
+
+    * If downhill proposals (move away from a local maximum) are accepted with probability equal to the relative heights of the posterior density at the proposed and current values. Intuitively, if $p(\theta_j + \Delta_j | \bold{y}) < p(\theta_j | \bold{y}), p(\text{move}) = \alpha$.
+    * As $j \rightarrow \infty$, $\theta_j$ is simulated value from $p(\theta | \bold{y})$.
+
+    Drawback:
+
+    * The direction of the proposed jump is unrelated to the location of the highest posterior probability, so it is inefficient in that it proposes jumps at random when seeking local maximum.
+
+  * <u>Gibbs sampling</u>
+
+    Idea: $c p(\theta_1, ..., \theta_d | \bold{y}) = p(\theta_1 | \theta_2, ..., \theta_d, \bold{y})$, where $c$ is a constant factor and $\theta_i$ are dependent.
+
+    Steps:
+
+    1. Select arbitrary starting parameter values $\theta_2^{(1)},\theta_3^{(1)},...,\theta_d^{(1)}$.
+    2. For iteration $j = 2,3,...$,
+       * Simulate $\theta_1^{j} \sim p(\theta_1|\theta_2^{(j-1)},...,\theta_d^{(j-1)}, \bold{y})$
+       * Simulate $\theta_2^{j} \sim p(\theta_2|\theta_1^{(j-1)},...,\theta_d^{(j-1)}, \bold{y})$
+       * ...
+       * Simulate $\theta_d^{j} \sim p(\theta_d|\theta_1^{(j-1)},...,\theta_{d-1}^{(j-1)}, \bold{y})$
+
+    Interpretation:
+
+    * In step 2, we simulate from the conditional posterior distribution of each $\theta_k$ given the data and all of the other parameters at their current values.
+
+    * As $j \rightarrow \infty, \theta_j = (\theta_1^{(j)},...,\theta_d^{(j)})$ is a simulated value from $p(\theta | \bold{y})$.
+
+    Similarity with RWM:
+
+    * Gibbs sampler is a special case of RWM.
+    * A proposed parameter is simulated (the 'jump')
+    * The proposal is accepted with a specified probability
+
+    Difference from RWM:
+
+    * In Gibbs sampler, the proposal distribution is more 'guided' by the data and other parameter values than RWM sampling
+    * In Gibbs sampler, the acceptance probability happens to always be 1.
+    * Gibbs sampler turns simulating from a multi-parameter distribution into simulating from a sequence of one-parameter distributions, which is much more tractable.
+
+* **How to implement an MCMC sampler to obtain simulated parameter values and do numerical summaries?**
+
+  To obtain simulated parameter values, do:
+
+  1. Run several parallel MCMC samplers with different starting values (preferably widely dispersed)
+  2. Simulate values from the Markov Chains for a <u>'burn in' period</u> (before the Markov Chains have converged to the stationary distribution), and discard the burn-in simulations.
+  3. Save simulated values after burn-in period. These will be the simulated values on which to perform inferential summaries.
+
+  Things need to take care of without packages:
+
+  * Pick a good proposal distribution $\tilde{p}(\Delta)$ for RWM where the jumps are not too big or too small.
+  * Simulate from the probability distributions
+  * Write code to perform Markov Chain simulation, check for convergence, etc.
+
+  With packages: JAGS, pymc3, etc, we need to 
+
+  * specify the model for data
+  * specify logistical issues concerning MCMC simulation (starting values, burn-in period, iterations to run after burn-in, etc)
+
+  To summary model results with the simulated values across all chains after the burn-in iterations:
+
+  * Approximate posterior mean and standard deviations of parameters by their sample counterparts.
+  * Can compute 95% central posterior intervals from the 2.5% and 97.5% of the sample of simulated values.
+
+* **How to diagnose the convergence of MCMC simulation?**
+
+  * <u>Visualization</u>: run parallel MCMC with different starting points, after burn-in period, plot the parameter draws as a function of iteration for each parameter, look for whether the chains coalesce.
+
+  * <u>R-hat statistic</u>: a numerical measure indicating whether the Markov Chain is running long enough to reach convergence. Specifically, $\hat{R}$ is a metric for comparing how well a chain has converged to the equilibrium distribution by comparing its behavior to other randomly initialized Markov chains. Multiple chains initialized from different initial conditions should give similar results. $\hat{R}$ is a necessary but not sufficient condition.
+    $$
+    \text{R-hat} = {\text{between-chain variance}\over \text{within-chain variance}}
+    $$
+
+    * $\sim 1.0$ indicates convergence - all chains converge to the same equilibrium.
+    * Large values ($>1.3$) indicates not long run enough or the parameter  may be difficult to obtain reasonable samples given strong autocorrelation in the sampler.
+
+* **What is the difference between direct/indirect MC simulation and MCMC simulation?**
+
+  Direct / indirect MC simulation simulates from $p(\theta | \bold{y})$.
+
+  MCMC simulation simulates a random walk in the space of $\theta$ which converges to $p(\theta | \bold{y})$.
+
+* **What is Hierarchical modeling in Bayesian framework?**
+
+  Hierarchical modeling is a compromise between separate regressions and one overall regression.
+
+  For each group there is a $\beta_g \sim \mathcal{N}(\mu_\beta, \Sigma_\beta)$. $\mathcal{N}(\mu_\beta, \Sigma_\beta)$ Is called normal 'random effects' distribution. 
+
+  * The data across all groups inform the values of $\mu_\beta, \Sigma_\beta$, meaning that the $\beta_g$ are informed from other groups besides the data in group $g$. Sometimes called '<u>partial pooling</u>' of data across groups. 
+  * They can vary but the random effects distribution keeps them from being too far apart. 
+  * The random effects distribution 'shrinks' the $\beta_g$ to a common population mean. Shrinkage tends to be particularly noticeable when some groups have small numbers of observations relative to others.
+  * Assuming a population distribution on the $\beta_g$ with unknown covariance $\Sigma_\beta$ can be viewed as a form of <u>regularization</u>.
+
+* **Briefly introduce a popular Bayesian analysis package**
+
+  PyMC3 is a Python library for programming Bayesian analysis, and more specifically, data creation, model definition, model fitting, and posterior analysis. It uses the concept of a `model` which contains assigned parametric statistical distributions to unknown quantities in the model. Within models we define random variables and their distributions.
+
+  PyMC3 uses the <u>No-U-Turn Sampler (NUTS)</u> and the <u>Random Walk Metropolis</u>, two Markov chain Monte Carlo (MCMC) algorithms for sampling in posterior space. Monte Carlo gets into the name because when we sample in posterior space, we choose our next move via a pseudo-random process. NUTS is a sophisticated algorithm that can handle a large number of unknown (albeit continuous) variables.
+
+## 3. Neural Network
+
+* **Types of output units? **
+
+  * Output unit for bernoulli - <u>sigmoid</u>:
+    $$
+    \widehat{Y} = {1\over 1 + e^{\phi(X)}}
+    $$
+
+  * Output unit for multi-noulli - <u>softmax</u>:
+    $$
+    \widehat{Y} = {e^{\phi_k(X)} \over \sum^K_{i=1} e^{\phi_k(X)}}
+    $$
+  
+* **Types of loss function?**
+
+  To find the loss function for a given distribution $p(y_i|W;x_i)$, first compute the likelihood for all points
+  $$
+  L(W;X;Y) = p(Y|W;X) = \prod_i p(y_i|W;x_i)
+  $$
+  and then maximize the likelihood is equivalent to minimizing the negative log-likelihood.
+  $$
+  \ell(W;X,Y) = -\log L(W;X,Y) = - \sum_i \log p (y_i | W;x_i)
+  $$
+
+  * Distribution is normal then negative log likelihood is <u>MSE</u>
+    $$
+    \ell(W; X,Y) = \sum_i (y_i - \widehat{y_i})^2
+    $$
+
+  * Distribution is bernoulli then negative log likelihood is <u>binary cross-entropy</u>
+    $$
+    \ell(W; X,Y) = -\sum_i [y_i \log p_i + (1- y_i)\log(1-p_i)]
+    $$
+
+
+  | Output type | Output distribution | Output layer | Cost function        |
+  | ----------- | ------------------- | ------------ | -------------------- |
+  | Binary      | Bernoulli           | Sigmoid      | Binary cross entropy |
+  | Discrete    | Multinoulli         | Softmax      | Cross entropy        |
+  | Continuous  | Gaussian            | Linear       | MSE                  |
+  | Continuous  | Arbitrary           |              | GANs                 |
+
+* **How does one minimize a loss function?**
+
+  Minima of loss function must occur at points where the gradient is 0. There are three approaches:
+
+  * <u>Brute force</u>: calculate the loss function for every possible $\beta_i$ and select the $\beta_i$ where the loss function is minimum. But very computationally expensive.
+  * <u>Exact</u>: solve the equation
+  * <u>Greedy algorithm</u>: gradient descent. The gradient at any point is the direction of steepest increase. The negative gradient at any point is the direction of steepest decrease. By following negative gradient, we can eventually find the lowest point.
+
+* **What is Gradient Descent and how it minimizes loss?**
+
+  Gradient descent is an algorithm for optimization of first order to finding a minimum of a function. It is an iterative method. $L$ is decreasing much faster in the direction of the negative derivative. The derivative is taken by following chain rule. The learning rate is controlled by the magnitude of $\eta$.
+  $$
+  w^{(i+1)} = w^{(i)} - \eta {d \ell\over dw}
+  $$
+
+* **How to choose learning rate and why it matters?**
+
+  The choice of learning rate has a significant impact on the performance of gradient descent. When it is too small, the algorithm makes very little progress. When it is too large, the algorithm may overshoot the minimum and has crazy oscillations. When it is appropriate, the algorithm will find the minimum and the algorithm converges.
+
+  Alternative methods to address how to set or adjust teh learning rate such as using the derivative or second derivatives and the momentum.
+
+* **How can we tell when gradient descent is converging?**
+
+  We can plot the loss function vs. iterations - trace plot. While the loss is decreasing throughout trading, it does not look like descent hit the bottom, this means the learning rate is small. When loss is mostly oscillating between values rather than converging, this is means the learning rate is too large. When the loss has decreased significantly during training, this means the learning rate is appropriate. Towards the end, the loss stabilizes and it cannot decrease further, this means the algorithm converges.
+
+* **Can we guarantee that there is always a global minimum or gradient descent can always find a global minimum?**
+
+  No, we can't. If the function is convex then the stationary point will be a global minimum.
+
+  Linear and polynomial regression loss function are convex (Hessian (2nd derivative) positive semi-definite everywhere). Neural network regression loss functions are not convex. Most stationary points are local minima but not global optima.
+
+* **What would be a good strategy to get the global minimum?**
+
+  We can either randomly restarts or add noise to the loss function.
+
+* **What is stochastic gradient descent?**
+
+  <u>SGD</u> considers only one example at a time to take a single step. Within one epoch (epoch: one forward pass and one backward pass of all the training examples), the SGD has steps:
+
+  1. Take one example
+
+  2. Feed it to neural network
+
+  3. Calculate its gradient
+
+  4. Use the gradient to update the weights
+
+     $W_i = W_i - \eta({\partial L_i \over \partial W_i})$
+
+  5. Repeat 1-4 for all examples in training dataset
+
+  The loss function is calculated for each example:
+  $$
+  L_i = -y_i \log p_i + (1-y_i)\log(1-p_i)
+  $$
+
+* **What is mini-batch stochastic gradient descent?**
+
+  <u>Mini batch SGD</u> uses a subset of examples, rather than a single example. 
+  $$
+  L^k = \sum_{i \in b^k}[-y_i \log p_i + (1-y_i)\log(1-p_i)]
+  $$
+
+  Within one epoch the mini batch SGD has steps:
+
+  1. Divide data into mini-batches
+  2. Pick a mini-batch
+  3. Feed it to neural network
+  4. Calculate the mean gradient of the mini-batch
+  5. Use the man gradient we calculated in step 4 to update the weights
+  6. Repeat steps 2-5 for the mini-batches we created
+
+* **What is back propagation?**
+
+* **What is momentum?**
+
+* **What is adaptive gradient descent?**
