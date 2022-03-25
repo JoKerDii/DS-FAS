@@ -2,7 +2,8 @@
   - [Overview](basics/overview.md)
   - Lecture Notes (Q&A)
     - [Fall 2021](notes/questions.md)
-    - [Spring 2022](notes/questions1.md)
+    - [Spring 2022(1)](notes/questions1.md)
+    - [Spring 2022(2)](notes/questions2.md)
   - Interview Notes
     - [ML Interview Notes](notes/MLnotes.md)
   - DS Project Notes
