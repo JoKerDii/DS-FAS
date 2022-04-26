@@ -155,7 +155,7 @@
 
   4. <u>Vanishing gradients</u>
 
-     https://stats.stackexchange.com/questions/301285/what-is-vanishing-gradient
+     The gradient tends to get smaller as we move backward through the hidden layers. This means that neurons in the earlier layers learn much more slowly than neurons in later layers. 
 
 * **What is Momentum?**
 
@@ -171,7 +171,7 @@
   v = \alpha v + (1-\alpha) g\\
   W^* = W - \eta v
   $$
-  The <u>intuition</u> behind momentum: take the exponential moving average, where past gradient values are  given higher weights (importance) than the current one. Intuitively,  discounting the importance given to the current gradient would ensure  that the weight update will not be sensitive to the current gradient.
+  The <u>intuition</u> behind momentum: take the exponential moving average, where past gradient values are given higher weights (importance) than the current one. Intuitively, discounting the importance given to the current gradient would ensure that the weight update will not be sensitive to the current gradient.
 
 * **What is Nesterov Momentum?**
 
@@ -279,7 +279,7 @@
 
   Bias initialization includes initializing output unit bias and initializing hidden unit bias. Usually there is no problem to have 0 bias because the gradient wrt bias does not depend on the gradients of the deeper layers.  
 
-* **Why some heuristic weight initializations  do not work?**
+* **Why some heuristic weight initializations do not work?**
 
   * <u>Zero initialization</u> (initialize all weight to 0)
 
@@ -334,7 +334,7 @@
 
     <u>Benefits</u>: Dropout has the effect of making the training process noisy, forcing  nodes within a layer to probabilistically take on more or less  responsibility for the inputs.
 
-    <u>Tips</u>: A common value is a probability of 0.5 for retaining the output of each  node in a hidden layer and a value close to 1.0, such as 0.8, for  retaining inputs from the visible layer. Dropout performs better on larger networks (more layers or more neurons per layer), because large networks can easily overfit the training data.
+    <u>Tips</u>: A common value is a probability of 0.5 for retaining the output of each node in a hidden layer and a value close to 1.0, such as 0.8, for retaining inputs from the visible layer. Dropout performs better on larger networks (more layers or more neurons per layer), because large networks can easily overfit the training data.
     
   * <u>Batch-normalization</u> 
   
@@ -640,3 +640,115 @@
 
   * Not always reliable. Subtracting the mean and normalizations can make undesirable changes in saliency maps. Grad-CAM and gradient base are the most reliable (from research).
   * Vulnerable to adversarial attacks
+  
+* **How to extract the activation maps from intermediate convolutional layers? (Visualize the activations of convolutional layers)**
+
+  Intermediate activations are useful for understanding how successful convolutional layers transform the input, and for getting a first idea of the meaning of individual convnet layers. Note that the output of a layer is often called its activation, so the output of the activation function is the activation map we want to visualize.
+
+## 3. Object Detection and Semantic Segmentation
+
+* *Object detection: classify and locatie*
+  * *Sliding window vs. region proposals*
+  * *Two stage detectors: the evolution of R-CNN, Fast R-CNN, Faster R-CNN*
+  * *Single stage detectors: detection without Region Proposals: YOLO/SSD*
+  
+* *Semantic Segmentation: classify every pixel*
+  * *Fully convolutional networks*
+  * *SegNet & U-NET*
+  * *Faster R-CNN linked to Semantic Segmentation: Mask R-CNN*
+
+* **What is the difference between image classification and semantic segmentation?** 
+
+  For image classification tasks, we assign a single label to the entire picture. For semantic segmentation, we assign a semantically meaningful label to every pixel in the image. So the output of semantic segmentation is not a class prediction but a picture.
+
+* **Why object detection and semantic segmentation?**
+
+  In computer vision, it's been used for autonomous vehicles, biomedical imaging detecting cancer/diseases, video surveillance (counting people, tracking people), aerial surveillance, geo sensing (tracking wildfire, glaciers, via satellite). In those applications, efficiency, sensitivity, and resolution are important. Real-time segmentation and detection is often needed.
+
+* **What metrics are usually used to measure accuracy?**
+
+  * <u>Pixel accuracy</u>: percent of pixels that are classified correctly
+  * <u>IOU</u>: Intersection-Over-Union (Jaccard index): Overlap / Union
+  * <u>mAP</u>: Mean Average Precision: AUC of Precision-Recall curve standard (0.5 is high)
+  * <u>DICE</u>: Coefficient (F1 Score): 2 * Overlap / Total number of pixels
+
+* **How to do object detection by region proposals?**
+
+  Object detection is combined classification and localization - <u>multi-task learning</u>. First, do classification using standard CNN. Second, do localization using regression for predicting box coordinates. Last, combine loss from classification (Softmax loss) and regression (L2-norm loss).
+
+  For multiple objects in a single image, we apply <u>region proposals methods</u> to find object-like regions. For example, <u>selective search algorithm</u> returns boxes that are likely to contain objects (no classification yet). It starts from small superpixels, using hierarchical segmentation, merge pixels based on similarity.
+
+  Then do <u>Region-based CNN (R-CNN)</u> for classification. In slow R-CNN, each region is forward through a CNN, which is slow. While in Fast R-CNN, region proposal is performed on the output feature of the convnet, instead of the original image. Next, the regions from the features are cropped and resized, and fed in then next convolution layer. Then, the regression loss and softmax loss are calculated, coordinates and the classes are determined. Faster R-CNN is faster than slow R-CNN.
+
+  However, Faster R-CNN can do even faster than Fast R-CNN. In Faster R-CNN, CNN makes proposals -  <u>CNN Region Proposal Network (RPN)</u> predicts region proposals from feature maps. RPN works to classify object / not object, and regress box coordinates. Another CNN layer works to make final classification (report scores), and final box coordinates. In total, there are four losses.
+
+* **What is the single-stage detection without region proposals?**
+
+  Make a grid on the image, within each grid, create a set of base boxes $B$ centered at each grid cell, regress over each base box, make class predictions.
+
+  YOLOv3.
+
+* **What is fully convolutional networks (FCN) for semantic segmentation?**
+
+  FCN is a network with a bunch of conv layers to make predictions for all pixels all at once. It contains a encode (localization) and a decoder (segmentation). The encoder works to downsample through convolutions and pooling, reduce number of parameters. The decoder works to upsample through transposed convolutions, batchnormalization, ReLU. The output of decoder goes through a softmax. The loss of FCN is cross-entropy loss on every pixel. 
+
+  Pros of FCN: 
+
+  * popularize the use of end-to-end CNNs for semantic segmentations
+  * Re-purpose imagenet pretrained networks for segmentation = Transfer learning
+  * Upsample using transposed layers
+
+  Cons of FCN: 
+
+  * Upsampling means loss of information during pooling.
+
+* **What is U-NET and how it works?**
+
+  U-NET consists of a symmetric encoder and decoder. 
+
+  * <u>Skip connection</u>:  it has skip connections from the output of convolutions blocks to the corresponding input of the transposed-convolution block at the same level: these skip connections allow gradients to flow more effectively and provides information from multiple scales of the image.
+  
+  * <u>Location information</u> from the down sampling path of the <u>encoder</u>
+  * <u>Contextual information</u> in the upsampling path by the <u>concatenating long-skip connection</u>
+
+## 4. SOTA Networks and Transfer Learning
+
+* **What are the two ideas proposed in GoogLeNet?**
+
+  1. <u>Inception blocks</u>: The motivation behind inception networks is to use more than a single type of convolution layer at each layer. In inception layer, it uses kernels with different sizes in convolutional layers and max pooling layers in parallel. Besides, it uses 1 * 1 convolutions to reduce the channel dimension between hidden conv layers. The inception network is formed by concatenating other inception modules. It includes several softmax output units to enforce regularization.
+
+  2. <u>Auxiliary block</u>: In GoogLeNet, there are two auxiliary blocks, one attached to the second inception block and the other to the fifth inception block. It works to take the output, predict the class, and calculate the loss. So the network has two more loss functions. This is beneficial, because when the NN is deep, the gradients are hard to go back to the first several layers to update weights, but with auxiliary blocks, gradients can go back early.
+
+     The total loss is $L = L_{end} + L_1 + L_2$, the gradient is calculated as $\nabla L = \nabla (L_{end} + L_1 + L_2)$. Since the loss functions are independent, when calculating the gradient wrt the layer after both auxiliary blocks, 
+
+* **What are the ideas proposed in MobileNet?**
+
+  <u>Depth-wise separable convolution (DW)</u>:  it combines a depth wise convolution and a pointwise convolution.
+
+* **What are the ideas proposed in DenseNets?**
+
+  It allows maximum information (and gradient) flow by connecting every layer directly with each other. It exploits the potential of the network through feature reuse. 
+
+  There are dense blocks in the hidden layers. Between dense blocks is a transition layer containing batch normalization, 1*1 convolutional layer, and average pooling.
+
+* **Lists some other SOTA networks**
+
+  MobileNetV2, Inception-Resnet (v1 and v2), Wide-Resnet, Xception, ResNeXt, ShuffleNet (v1 and v2), Squeeze and Excitation Nets.
+
+  [[The evolution of image classification explained](https://stanford.edu/~shervine/blog/evolution-image-classification-explained)]
+
+* **What is transfer learning?**
+
+  Transfer learning is a research problem in machine learning that focuses on storing knowledge gained while solving one problem and applying it to a different but related problem. Transfer learning is the solution to the situation that we want an image classifier to be trained in a few minutes on a CPU with very little data. We can use pre-trained models with known weights. 
+
+  The <u>main idea</u> of TL is that, earlier layers of the network learn low level features, that can be adapted to new domains by changing weights at later and fully connected layers.
+
+  <u>Differential learning rate</u>: The main idea is to train different layers at different rate. We can train early conv layer with a smaller learning rate, later conv layer with a larger learning rate, and dense layer with a higher learning rate. 
+
+* **What is representation learning in transfer learning?** [revise needed]
+
+  Representation learning uses big net to extract features from new samples, which are then fed to a new classifier.
+
+  We freeze the weights in trained convolutional layers, fine tune some later layers, and remove fully connected layers. We have to be careful not to have big gradient updates.
+
+  The earlier layers learn highly generic feature maps (e.g. edges, colors, textures). Later layers learn abstract concepts (e.g. dog's ear). 

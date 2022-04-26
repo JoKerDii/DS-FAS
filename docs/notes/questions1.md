@@ -4,7 +4,7 @@
 
 * **What is unsupervised learning? Give some examples.**
 
-  Unsupervised learning aims to discover subgroups among variables or  observations, but not about how variables or observations relate to a response variable. It can be used as a descriptive tool.
+  Unsupervised learning aims to discover subgroups among variables or observations, but not about how variables or observations relate to a response variable. It can be used as a descriptive tool.
 
   Examples include: to find subgroups of breast cancer patients according to similar gene expressions; to find subgroups among online shoppers according to their browsing and purchasing patterns; to find subgroups of movies according to ratings assigned by movie viewers.
 
@@ -24,11 +24,11 @@
 
     Two main types of approaches to clustering are
 
-  1. partitioning clustering
+  1. <u>Partitioning clustering</u>
 
      Partitioning clustering specifies the number of clusters in advance, and then invoke an algorithm to partition the data. 
 
-  2. hierarchical clustering
+  2. <u>Hierarchical clustering</u>
 
      Hierarchical clustering iteratively merges or divides the data typically one observation at the time, and then decide on partitions afterward
 
@@ -124,15 +124,16 @@
      * For each cluster k, compute the <u>cluster centroid</u> $\overline{x_k}$ (<u>The variable-wise average of the observations in cluster k</u>).
      * Given the K centroids, <u>reassign all observations to clusters based on their closeness to the centroids</u>.
 
-  * **The bad and the good of k-means clustering? And solutions to the bad?**
+* **The bad and the good of k-means clustering? And solutions to the bad?**
+    
     * It requires analyst to pre-specify K in advance. (Though there are ways to optimize K)
       * Try various values of K and compare results
       * Try different initial cluster assignments in parallel, and then choose the solution with the best <u>within-cluster sum of squared deviations</u>.
     * The algorithm is <u>locally optimal</u>, not globally optimal. Therefore, we can get different clusterings depending on the starting cluster assignment.
-
+    
 * **How to use and interpret Silhouette plot?**
 
-  Silhouette plot is a diagnostic method for any clustering including k-means. Once a clustering has be determined, we can calculate <u>silhouette</u> for observation $i$ as:
+  Silhouette plot is a diagnostic method for any clustering including k-means. Once a clustering has been determined, we can calculate <u>silhouette</u> for observation $i$ as:
   $$
   s_i = {b_i - a_i \over \max(a_i, b_i)}
   $$
@@ -229,7 +230,7 @@
 * **Compare the two types of methods to choose the optimal number of clusters in terms of performance.**
 
   * Both elbow method and average silhouette method measure global clustering characteristics only, and are informal approaches
-  * Gap statistic is a more principled approach to choosing cluster sizes. It terns out to result in more conservative clusterings (fewer clusters), but does not perform as reliably when the clusters overlap.
+  * Gap statistic is a more principled approach to choosing cluster sizes. It turns out to result in more conservative clusterings (fewer clusters), but does not perform as reliably when the clusters overlap.
 
 * **What is DBSCAN and how it works?**
 
@@ -298,7 +299,7 @@
   & \propto p(\theta)p(\bold{y}|\theta) \propto p(\theta) L(\theta | \bold{y})
   \end{aligned}
   $$
-  Poesterior $\propto$ Prior $\times$ Likelihood 
+  Posterior $\propto$ Prior $\times$ Likelihood 
 
 * **What is the key idea of bayesian statistics?**
 
@@ -310,7 +311,7 @@
 * **How to choose prior distribution?**
 
   * There are two types of prior distributions:
-    * <u>Informative prior distribution</u>: use knowledge and expertise to construct  a prior distribution that properly reflects prior beliefs about the unknown parameters
+    * <u>Informative prior distribution</u>: use knowledge and expertise to construct a prior distribution that properly reflects prior beliefs about the unknown parameters
     * <u>Non-informative prior distribution</u>: choose a distribution objectively, acting as though no prior knowledge about the parameters exists before observing the data. Non-informative prior distributions are termed 'vague', 'diffuse', and 'objective'.
   * Comparison:
     * The best and most scientific approach would be to construct a defensible informative prior distribution. However, someone would argue that informative prior distributions are not objective or scientific because different Bayesians could given different priors and end up with different posteriors.
@@ -394,7 +395,7 @@
 
 * **Why we use Bayes theorem instead of conditional probability?**
 
-  Conditional probability is the likelihood of an outcome occurring, based on a previous outcome occurring. Bayes' theorem provides a way to  revise existing predictions or theories (update probabilities) given new or additional evidence.
+  Conditional probability is the likelihood of an outcome occurring, based on a previous outcome occurring. Bayes' theorem provides a way to revise existing predictions or theories (update probabilities) given new or additional evidence.
 
 * **What are the approaches used to summarize posteriors?**
 
@@ -426,7 +427,7 @@
     1. Simulate 10000 values from the posterior distribution
     2. Report sample summaries from the distribution of 10000 simulated values
 
-* **What are Indirect Monte Carlo methods and how  they work?**
+* **What are Indirect Monte Carlo methods and how they work?**
 
   Indirect MC methods include rejection sampling and weighted bootstrap.
 
@@ -482,7 +483,8 @@
 
     * When $h(\theta) / g(\theta) = L(\theta | \bold{y})$ is not constant, then
       * It could take ages in rejection sampling before a $\theta$ is accepted.
-        * The probabilities $\{q_1, ..., q_K\}$ in the weighted bootstrap could be terribly skewed so that the discrete approximation to $p(\theta | \bold{y})$ is horrible.
+        
+        The probabilities $\{q_1, ..., q_K\}$ in the weighted bootstrap could be terribly skewed so that the discrete approximation to $p(\theta | \bold{y})$ is horrible.
 
   * Another problem is these methods require proper prior. If we assume an improper prior distribution, we cannot simulate from $p(\theta)$.
 
@@ -572,12 +574,12 @@
   * Simulate from the probability distributions
   * Write code to perform Markov Chain simulation, check for convergence, etc.
 
-  With packages: JAGS, pymc3, etc, we need to 
+  With packages: JAGS, pymc3, etc, we need to
 
   * specify the model for data
   * specify logistical issues concerning MCMC simulation (starting values, burn-in period, iterations to run after burn-in, etc)
 
-  To summary model results with the simulated values across all chains after the burn-in iterations:
+  To summarize model results with the simulated values across all chains after the burn-in iterations:
 
   * Approximate posterior mean and standard deviations of parameters by their sample counterparts.
   * Can compute 95% central posterior intervals from the 2.5% and 97.5% of the sample of simulated values.
@@ -604,7 +606,7 @@
 
   Hierarchical modeling is a compromise between separate regressions and one overall regression.
 
-  For each group there is a $\beta_g \sim \mathcal{N}(\mu_\beta, \Sigma_\beta)$. $\mathcal{N}(\mu_\beta, \Sigma_\beta)$ Is called normal 'random effects' distribution. 
+  For each group there is a $\beta_g \sim \mathcal{N}(\mu_\beta, \Sigma_\beta)$. $\mathcal{N}(\mu_\beta, \Sigma_\beta)$ is called normal 'random effects' distribution. 
 
   * The data across all groups inform the values of $\mu_\beta, \Sigma_\beta$, meaning that the $\beta_g$ are informed from other groups besides the data in group $g$. Sometimes called '<u>partial pooling</u>' of data across groups. 
   * They can vary but the random effects distribution keeps them from being too far apart. 
