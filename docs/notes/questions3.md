@@ -364,4 +364,14 @@
   * The sheer size also makes it extremely slow to train
   * The fine-tuning is not straight-forward and requires lots of tweaks and experimentation (for example, we have to use the same tokenizer used during pre-training)
 
+* **Why Transformer is better than RNN/LSTM?**
+
+  Transformer has three characteristics. 
+
+  * <u>Non-sequential</u>, meaning that sentences are processed as a whole in Transformer rather than replying on past hidden states to capture dependencies with previous words. This feature allows Transformer to not suffer from long dependency issues as RNN/LSTM.
+  * <u>Self-attention</u>. It is used to compute similarity scores between words in a sentence. It provides information about the relationship between different words
+  * <u>Positional embeddings</u>. It uses fixed or learned weights which encode information related to a specific position of a token in a sentence. It provides information about the relationship between different words.
+
+  In summary, RNN suffers from vanishing gradients, LSTM was trying to solve this issue but still relying on gate/memory mechanisms to pass information from old steps to the current one. Transformer architecture leaves no room for information loss. On top of that, Transformer can look at both past and future elements at the same time. The only drawback of Transformer is that processing data through self-attention takes $O(N^2)$ time.
+
 * Hugging Face?

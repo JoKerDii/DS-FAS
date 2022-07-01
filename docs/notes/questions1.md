@@ -125,7 +125,7 @@
      * Given the K centroids, <u>reassign all observations to clusters based on their closeness to the centroids</u>.
 
 * **The bad and the good of k-means clustering? And solutions to the bad?**
-    
+  
     * It requires analyst to pre-specify K in advance. (Though there are ways to optimize K)
       * Try various values of K and compare results
       * Try different initial cluster assignments in parallel, and then choose the solution with the best <u>within-cluster sum of squared deviations</u>.
@@ -337,6 +337,8 @@
 
   1. Formulate a probability model for the data.
 
+     For example, if the outcome is whether the user clicked the button or not, we are going to form a Bernoulli model. 
+
   2. Decide on a prior distribution for the unknown model parameters.
 
      (Note: usually improper prior distribution lead to proper posterior distributions, but one needs to check. A proper prior distribution always leads to a proper posterior distribution.)
@@ -347,9 +349,19 @@
 
   4. Determine the posterior distribution 
 
-     (Note: posterior = prior + likelihood, obtained by bayes rule. Usually the normalizing constant cannot be determined analytically.)
+     (Note: Posterior $\propto$ Prior $\times$ Likelihood , obtained by bayes rule. Usually the normalizing constant cannot be determined analytically.)
 
   5. Summarize important features of the posterior distribution, or calculate quantities of interest based on the posterior distribution.
+
+     * Posterior mean
+
+     * Posterior mode
+
+     * 95% central posterior interval for $\theta$
+
+       Narrower than frequentist 95% confidence interval.
+
+     * Highest posterior density (HPD) region for $\theta$- shortest interval with specified probability. Usually more difficult to compute than central intervals. 
 
 * **Why bayesian models can be seen as generative models?**
 

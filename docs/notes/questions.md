@@ -165,6 +165,19 @@
 
 ## 4. Ensemble
 
+* **A summary of Ensembles**
+  * Ensembles combine classifiers to improve performance. 
+  * Boosting 
+    * Reduce bias. 
+    * Increases variance (large ensemble can cause overfitting). 
+    * Sequential. 
+    * High dependency between ensemble elements. 
+  * Bagging
+    * Reduce variance (large ensemble can’t cause overfitting). 
+    * Bias isn’t changed
+    * Parallel. 
+    * Minimizes correlation between ensemble elements.
+
 * **What is bagging? Why (not) bagging?** 
 
   Bagging is an <u>ensemble</u> meta-algorithm combining predictions from multiple-decision trees through a <u>majority voting</u> mechanism.
