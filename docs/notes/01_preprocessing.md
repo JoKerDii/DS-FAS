@@ -82,10 +82,8 @@ Missing values.
     encoding = titanic.groupby('Embarked').size()
     encoding = encoding/len(titanic)
     titanic['enc'] = titanic.Embarked.map(encoding)
-    
-    from scipy.stats import rankdata
     ```
-
+    
   * One-hot encoding
 
     `pandas.get_dummies`
@@ -96,7 +94,7 @@ Missing values.
 
   * Combine categorical features
 
-  > **Question 2**: Suppose we fit a tree-based model. In which cases laebl encoding can be better to use than one-hot encoding?
+  > **Question 2**: Suppose we fit a tree-based model. In which cases label encoding can be better to use than one-hot encoding?
   >
   > * <u>When categorical feature is ordinal</u>. Correct! Label encoding can lead to better quality if it preserves correct order of values. In this case a split made by a tree will divide the feature to values 'lower' and 'higher' that the value chosen for this split.
   > * <u>When we can come up with label encoder, that assigns close labels to similar (in terms of target) categories.</u> Correct! First, in this case tree will achieve the same quality with less amount of splits, and second, this encoding will help to treat rare categories.
@@ -110,7 +108,7 @@ Missing values.
 
 * Periodicity
 
-  Day number in week, month, season, year, second, minute, hour
+  Number in day, week, month, season, year, second, minute, hour
 
 * Time since
 
@@ -126,7 +124,7 @@ Missing values.
 
 * Difference between dates
 
-  * e.g. In churn prediction: use 'last purchase data' and 'last call date' and add number of days between these two events (day_diff)
+  * e.g. In churn prediction: use 'last purchase data' and 'last call date' and add number of days between these two events (`day_diff`)
 
 ## 4. Coordinates
 
@@ -140,75 +138,109 @@ Missing values.
 
 ## 5. Missing data
 
-*  Fill NA approaches - Mean, median, etc
-* Reconstruct values - isnull feature
-* Avoid filling NAs before feature generation
-* XGBoost can handle NaN
+*  Reason: 
+
+   - Many ML algo failed to perform on data if it contains missing values. Some may work with missing values: kNN, XGBoost, and Naïve Bayes.
+   - You may end up building biased model that leads to incorrect results (less accuracy or precision)
+
+*  Methods to handle missing values:
+
+   - Figure out why missing
+
+   - Drop
+
+     - Complete Case Analysis (CCA)
+
+       Discarding observations that contain missing values. If Data MCAT.
+
+     - If missing values are MAR or MCAR 
+
+     - Smaller sample size -> less predictive power
+
+     - Deleting rows or columns
+
+   - Impute 
+   
+     - Fill NA with mean, median, mode, etc
+     - Random sample imputation: replace all missing data by the values random sampled from the data
+     - Multiple imputation (MICE)
+     - kNN imputer
+     - Predicting missing data by regression on other variables 
+
+   - Can be part of feature engineering
+
+     Add indicator variable indicating whether the value is missing
+   
+   - XGBoost, Naïve Bayes can handle NaN without imputation preprocessing
+   
 
 ## 6. Feature extraction from text
 
 * Pipeline of applying Bag of Words (BOW)
 
-1. Texts preprocessing
+  1. Texts preprocessing
 
-   1. Lowercase
+     1. Lowercase
 
-   2. Lemmatization
+     2. Lemmatization
 
-   3. Stemming
+     3. Stemming
 
-   4. Stopwords
+     4. Stopwords
 
-      * Articles or prepositions
-      * Very common words
+        * Articles or prepositions
+        * Very common words
 
-      NLTK, natural language toolkit library for python
+        NLTK, natural language toolkit library for python
 
-      `sklearn.feature_extraction.text.CountVectorizer` (max_df)
+        `sklearn.feature_extraction.text.CountVectorizer` (max_df)
 
-2. Bag of words: 
 
-   Count the number of occurrences: 
+  2. Bag of words: 
 
-   `sklearn.feature_extraction.text.CountVectorizer`
+     Count the number of occurrences: 
 
-3. Term frequency "TFiDF":
+     `sklearn.feature_extraction.text.CountVectorizer`
 
-   ```python
-   tf = 1/x.sum(axis = 1)[:,None]
-   x = x * tf
-   ```
+  3. Term frequency "TFiDF":
 
-   Inverse document frequency
+     ```python
+     tf = 1/x.sum(axis = 1)[:,None]
+     x = x * tf
+     ```
 
-   ```python
-   idf = np.log(x.shape[0] / (x>0).sum(0))
-   x = x * idf
-   ```
+     Inverse document frequency
 
-   `sklearn.feature_extraction.text.TfidfVectorizer`
+     ```python
+     idf = np.log(x.shape[0] / (x>0).sum(0))
+     x = x * idf
+     ```
 
-4. N-grams
+     `sklearn.feature_extraction.text.TfidfVectorizer`
 
-   Help use local context around each word. N-grams features are typically sparse
 
-   `sklearn.feature_extraction.text.CountVectorizer` (Ngram_range, analyzer)
+  4. N-grams
 
-5. Embeddings (word2vec)
+     Help use local context around each word. N-grams features are typically sparse
 
-   Pre-trained models:
+     `sklearn.feature_extraction.text.CountVectorizer` (Ngram_range, analyzer)
 
-   * Words: Word2vec, Glove, FastText, etc
-   * Sentences: Doc2vec, etc
+  5. Embeddings (word2vec)
 
-* Compare BOW and w2v
-  1. Bag of Works
-     * Very large vectors
-     * Meaning of each value in vector is know
-  2. Word2vec
-     * Relatively small vectors
-     * Values in vector can be interpreted only in some cases
-     * The words with similar meaning often have similar embeddings
+     Pre-trained models:
+
+     * Words: Word2vec, Glove, FastText, etc
+     * Sentences: Doc2vec, etc
+
+  * Compare BOW and w2v
+    1. Bag of Works
+       * Very large vectors
+       * Meaning of each value in vector is know
+    2. Word2vec
+       * Relatively small vectors
+       * Values in vector can be interpreted only in some cases
+       * The words with similar meaning often have similar embeddings
+
 
 ## 7. Feature extraction from images
 

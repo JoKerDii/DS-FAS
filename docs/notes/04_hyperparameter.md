@@ -55,7 +55,7 @@
         * SGD + momentum (converge slower but generalize better)
         * Adam/ adadelta/ adagrad/... (in practice lead to more overfitting)
       * Batch size: larger -> more overfitting (32, 64)
-      * Learning rater (start from large lr like 0.1) 
+      * Learning rate (start from large lr like 0.1) 
       * Regularization 
         * L2/l1 for weights
         * Dropout / dropconnect (do not add dropout at the first layer)
