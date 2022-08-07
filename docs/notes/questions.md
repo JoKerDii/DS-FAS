@@ -1,5 +1,18 @@
 # Machine Learning Concepts Q&A (I)
 
+**What is ML workflow?**
+
+1. Should I use ML on this problem? 
+   * Is there a pattern to detect? 
+   * Can I solve it analytically? 
+   * Do I have data? 
+2. Gather and organize data. 
+3. Preprocessing, cleaning, visualizing. 
+4. Establishing a baseline. 
+5. Choosing a model, loss, regularization, ... 
+6. Optimization (could be simple, could be a Phd...). 
+7. Hyperparameter search. 
+
 ## 1. Regression
 
 * **We have had a train-test split. Why we need a validation set?** 
@@ -16,11 +29,11 @@
 
   <u>Clustering</u>. It is important to standardize variables before running Cluster Analysis. It is because <u>cluster analysis techniques depend on the concept of measuring the distance between the different observations we're trying to cluster</u>. If a variable is measured at a higher scale than the other variables, then whatever measure we use will be overly influenced by that variable.
 
-  <u>PCA</u>. Prior to PCA, it is critical to standardize variables. It is because <u>PCA gives more weight to those variables that have higher variances</u> than to those variables that have very low variances. In effect the results of the analysis will depend on what units of measurement are used to measure each variable. Standardizing raw values makes equal variance so high weight is not assigned to variables having higher variances.
+  <u>Principal Component Analysis (PCA)</u>. Prior to PCA, it is critical to standardize variables. It is because <u>PCA gives more weight to those variables that have higher variances</u> than to those variables that have very low variances. In effect the results of the analysis will depend on what units of measurement are used to measure each variable. Standardizing raw values makes equal variance so high weight is not assigned to variables having higher variances.
 
-  <u>SVM</u>. <u>All SVM kernel methods are based on distance</u> so it is required to scale variables prior to running final Support Vector Machine (SVM) model.
+  <u>Support Vector Machine (SVM)</u>. <u>SVM model is optimized by maximizing the distance between hyperplane and the support vectors</u> so it is required to scale variables prior to training a SVM model.
 
-  <u>Lasso and Ridge</u>. <u>They put constraints on the size of the coefficients associated to each variable</u>. However, this value will depend on the magnitude of each variable.
+  <u>Lasso and Ridge Regression</u>. <u>They put constraints on the size of the coefficients associated to each variable</u>. However, this value will depend on the magnitude of each variable.
 
   Scaling does not affect statistical inference in simple regression models, as the estimates are adjusted appropriately and the p-values will be the same. But it does <u>removes collinearity</u>. Interaction term would introduced collinearity. Scaling the one of the two variables can remove collinearity.
 
@@ -38,16 +51,15 @@
 
   Standardization is useful when we assume the data come from a <u>Gaussian distribution</u> (approximately).
 
-  standardization makes it realistic to interpret the  intercept term as the expected value of $Y_i$ when the predictor values are set to their means.
+  Standardization makes it realistic to interpret the intercept term as the expected value of $Y_i$ when the predictor values are set to their means.
 
 * **What is Bootstrapping?**
 
   Bootstrapping is a procedure for resampling a dataset <u>with replacement</u> to produce an <u>empirical distribution</u> of the value of interest.
 
-  The key points of Bootstrapping: 
+  Bootstrap is useful because it's easy to apply and require no assumption regarding the distribution of the data.
 
-  1. We need to preserve key statistics about the original distribution to come up with a good empirical distribution. 
-  2. We must sample with replacement.
+  The bootstrap method can be used to estimate a quantity of a population. This is done by repeatedly taking small samples with replacement, calculating the statistic, and taking the average of the calculated statistics.
 
 * **What is confidence interval and how to interpret it?**
 
@@ -56,10 +68,29 @@
   If we were to compute 95% confidence intervals for each of K repeated samples, we would expect <u>0.95*K of those confidence intervals to contain the true parameter of interest</u>.
 
 * **What is multicollinearity?**
+  
+  <u>Overview</u>: 
+  
   Multicollinearity occurs when independent variables in a regression model are correlated. This correlation is a problem because independent variables should be independent. If the degree of correlation between variables is high enough, it can cause problems when you fit the model and interpret the results.
-
-  Multicollinearity is a problem because <u>it undermines the statistical significance of an independent variable</u>. If two independent variables are correlated, it is hard to distinguish the effect of these two variables on the dependent variable. Other things being equal, the larger the standard error of a regression coefficient, the less likely it is that this coefficient will be statistically significant. 
-
+  
+  <u>Why multicolinearity should not exist?</u>
+  
+  There is an assumption when we do regression analysis. That is, the independent variables should not be correlated among themselves. Because regression is going to capture the effect of independent variable on the dependent variable by regression coefficients. When we interpret coefficients we say, the average change of dependent variable is beta, for 1 unit change in the independent variable X, keeping all other variables constant. 
+  
+  <u>What problem does multicollinearity cause?</u>
+  
+  Multicollinearity is a problem because <u>it generates high variance of the estimated coefficients and so diminishes the statistical significance of an independent variable</u>. If two independent variables are correlated, it is hard to distinguish the effect of these two variables on the dependent variable. Other things being equal, the larger the standard error of a regression coefficient, the less likely it is that this coefficient will be statistically significant. 
+  
+  <u>Possible way to detect multicollinearity?</u>
+  
+  It is possible that the adjusted R squared for a model is pretty good and even the overall F-test statistic is also significant but some of the individual coefficients are statistically insignificant. This is a possible indication of the presence of multicollinearity since multicollinearity affects the coefficients and corresponding p-values, but it does not affect the goodness-of-fit statistics or the overall model significance.
+  
+  <u>How to measure multicollinearity?</u>
+  
+  A very simple test known as the VIF test is used to assess multicollinearity in our regression model. The variance inflation factor (VIF) identifies the strength of correlation among the predictors.
+  
+  VIF tells us the factor by which the correlations amongst the predictors inflate the variance. VIFs do not have any upper limit. The lower the value the better. VIFs between 1 and 5 suggest that the correlation is not severe enough to warrant corrective measures. VIFs greater than 5 represent critical levels of multicollinearity where the coefficient estimates may not be trusted and the statistical significance is questionable.
+  
 * **What does regularization help with?**
 
   We have some pretty <u>large and extreme coefficient values with high variance</u> in our models. We can clearly see some overfitting to the training set. In order to reduce the coefficients of our parameters, we can introduce a penalty term that penalizes some of these extreme coefficient values.
@@ -69,12 +100,14 @@
 
 * **Compare Ridge and Lasso regression?**
 
-  Ridge regression reduces the complexity of the model by <u>shrinking the coefficients</u>, but it doesn’t nullify them. It controls the amount of regularization using a parameter $\lambda$. <u>The penalty term is proportional to the L2-norm of the coefficients</u>.
+  Ridge and Lasso regressions are linear regression with different regularization - L2 and L1 regularization. 
 
-  Lasso regression controls the amount of regularization using a parameter $\lambda$. It controls the amount of regularization using a parameter $\lambda$. <u>The penalty term is proportional to the L1-norm of the coefficients</u>.
+  Ridge regression is penalized for the sum of squared values of the coefficients. The penalty term is the product of a parameter $\lambda$ and L2-norm of the coefficient.
+
+  Lasso regression is penalized for the sum of absolute values of the coefficients. The penalty term is the product of a parameter $\lambda$ and L1-norm of the coefficient.
 
   Differences:
-
+  
   1. Since Lasso regression tend to produce zero estimates for a number of model parameters - we say that <u>Lasso solutions are sparse</u> - we consider to be a method for <u>variable selection</u>.
   2. In Ridge Regression, the penalty term is proportional to the L2-norm of the coefficients whereas in Lasso Regression, the penalty term is proportional to the L1-norm of the coefficients.
   3. <u>Ridge Regression has a closed form solution</u>, <u>while Lasso Regression does not</u>. We often have to solve this iteratively. In the sklearn package for Lasso regression, there is a parameter called `max_iter` that determines how many iterations we perform.
@@ -117,9 +150,140 @@
 
 ## 3. Classification
 
+* **What is generalization?**
+
+  Generalization is model ability to predict held out data. Simple model cannot model data well. Complex model models also noise. 
+
+* **How to evaluate how good my classifier is?**
+
+  Metrics. 
+
+  * Metrics on a dataset is the model performance that we care about. 
+  * We typically cannot directly optimize for the metrics. 
+  * Our loss function should reflect the problem we are solving. We then hope it will yield models that will do well on our dataset.
+
+  Examples of metrics:
+
+  * Accuracy
+
+  * Recall: R = TP / all groundtruth instances
+
+  * Precision: P = TP / all positive predictions
+
+  * F1 score: Harmonic mean of precision and recall: 2 P*R/(P+R)
+
+  * Precision-Recall curve: Trade-off between recall and precision using the decision threshold
+
+  * Average Precision (AP): area under the PR curve
+
+  * Receiver Operator Characteristic (ROC): Trade-off between false-positive-rate (FPR) and true-positive-rate (TPR) using the decision threshold
+
+    Better in ROC ⇒ better in PR (not always vice-versa)
+
+* **How do we find the optimal solution of a loss function?**
+
+  <u>Gradient descent:</u> 
+
+  Initialize a random point, repeatedly update it based on the gradient of loss and a learning rate lambda. 
+
+  Initialize $w_0$ randomly, for t = 1:T (iterations), update $w$ by rule: $w_{t+1} = w_{t}-\lambda_t \nabla_w L(w_t)$. 
+
+  Learning rate $\lambda$: if it's too large, the updates are unstable and can diverge. If it's too small, the updates are stable but very slow.
+
+  <u>Gradient descent with Momentum:</u>
+
+  Based on gradient descent algorithm, it introduces a momentum coefficient $\alpha \in [0,1)$ so that the updates have 'memory'. 
+
+  Momentum is a nice trick that can help speed up convergence. Generally we choose α between 0.8 and 0.95, but this is problem dependent. 
+
+  Initialize $w_0$ randomly, initialize $\delta_0$ to the zero vector, for t=1:T (iterations), update: $\delta_{t+1} = -\lambda \nabla_{w_{t}}L(w_{t}) + \alpha \delta_{t}\\ w_{t+1} = w_{t} + \delta_{t+1}$. 
+
+  <u>Stochastic gradient descent:</u> 
+
+  Considering using all the data is computational expensive, SGD randomly picks a subsample (even one datum works) and compute gradient. 
+
+  Mini-batch gradient descent: Randomly shuffle examples in the training set and compute the average gradient among samples. People commonly use the term SGD for mini-batch optimization.
+
+  The drawback is it's too noisy. The merit is it's very fast. This method produces an unbiased estimator of the true gradient. This is the basis of optimizing ML algorithms with huge datasets.
+
+  Computing gradients using the full dataset is called batch learning, using subsets of data is called mini-batch learning.
+
+* **What the different types of cross-validation?**
+
+  <u>Leave-p-out cross-validation:</u>
+
+  We use p observations as the validation set and the remaining observations as the training set.
+
+  <u>K-fold cross-validation:</u>
+
+  The training set is randomly partitioned into k equal size subsamples. Of the k subsamples, a single subsample is retained as the validation data for testing the model, and the remaining k − 1 subsamples are used as training data. The cross-validation process is then repeated k times (the folds). The k results from the folds can then be averaged (or otherwise combined) to produce a single estimate.
+
+* **Pros and Cons of Logistic Regression?**
+
+  <u>Pros:</u>
+
+  Quick to train, convex loss. Cross-entropy objective function for logistic regression is convex.
+
+  Good accuracy for many simple data sets
+
+  Resistant to overfitting if #data >= 10 #features.
+
+  Good interpretability. Can interpret model coefficients as indicators of feature importance.
+
+  <u>Cons:</u>
+
+  Linear decision boundary is too simple for more complex problems.
+
+* **Why do we care about convexity?** 
+
+  Any local minimum is a global minimum.
+
+  This makes optimization a lot easier because we don't have to worry about getting stuck in a local minimum。
+
+* **What's the difference between linear classification and non-linear classification?**
+
+  Linear classification means that the decision boundary is linear. 
+
+* **What's the difference between parametric and non-parametric models?**
+
+  Parametric models have fixed number of parameters.
+
+  Non-parametric models have no fixed number of parameters. Parameters grow with the number of training data points. 
+
+* **What is K Nearest Neighbors method?**
+
+  The value of the target function for a new point is estimated from the known values of the nearest training examples. The distance is defined to be Euclidean. 
+
+  NN algorithm does not explicitly compute decision boundaries but these can be inferred. The decision boundaries can be visualized by Voronoi diagram. It natually forms complex decision boundaries.
+
+  <u>How to choose K?</u>
+
+  Large K may leads to better performance / generalization. But if K is too large, we may end up looking at samples that are far away from the point. 
+
+  We can use cross validation to find K. Rule of thumb is K< sqrt(n), where n is the number of training examples.
+
+  <u>Issues and remedies:</u> 
+
+  * Attributes with larger ranges are treated as more important. So we need to normalize or standardize the scale.
+  * Irrelevant, correlated attributes add noise to distance measure. So we need to eliminate some attributes
+  * High dimensional data increase computational costs. So we need to increase training data exponentially with dimension.
+  * Expensive at run time.
+
+* **How to make prediction using KNN?**
+
+  For K=1, we predict the same value / class as the nearest instance in the training set.
+
+  For K>1, find the K closest training examples, and either predict class by majority vote (in classification), or predict value by average weighted inverse distance (in regression).
+
+  Ties may occur in a classification problem when K > 1. For binary classification, we choose an odd K to avoid ties. For multi-class classification, we decrease the value of K until the tie is broken. If that does not work, use the class by a 1NN classifier.
+
+  Larger K: predictions have higher bias (Less true). Under fitting. Model is too simple.
+
+  Smaller K: predictions have higher variance (Less stable / robust). Over fitting. Model is too complex.
+
 * **What is the benefits of ROC curve and AUC score?**
 
-  The ROC curve allows us to find the classification threshold that gives the best FPR and TPR trade-off. 
+  The ROC curve shows the performance of a classification model at all classification threshold. It allows us to find the classification threshold that gives the best FPR and TPR trade-off. 
 
   By summarizing the information in the ROC curve, we can compare our classifier against a perfect classifier and a random classifier. 
 
@@ -127,15 +291,25 @@
 
 * **What is decision tree? Why decision tree?** 
 
-  Decision tree is a graphical representation of possible solutions to a decision based on certain conditions.
+  Decision tree is a graphical representation of making a decision based on certain conditions.
 
-  It's like simple flow charts that can be formulated as mathematical models for classification and these models have the properties we desire;
+  <u>Decision tree properties:</u>
+
+  * Choose an attribute on which to descend at each level
+  * Condition on earlier choices
+  * Restrict only one dimension at a time
+  * Declare an output value when you get to the bottom
+  * Not necessarily split each dimension once.
+
+  It's like simple flow charts that can be formulated as mathematical models for classification and these models have the properties we desire:
 
   - Interpretable by humans
   - Have sufficiently complex decision boundaries
-  - The decision boundaries are locally linear, each component of the decision boundary is simple to describe mathematically.
+  - The decision boundaries are locally linear, each component of the decision boundary is simple to describe mathematically. 
 
 * **Difference of decision tree on classification and regression?**
+
+  Suppose each path from the room to a leaf is a region R of input space. Let a set of points be the training examples that fall into R.
 
   For classification, we return the <u>majority</u> class in the points of each leaf node.
 
@@ -147,13 +321,35 @@
 
   The measure of purity is called the <u>information</u>. It represents the <u>expected amount of information that would be needed to specify whether a new instance should be classified 0 or 1, given the example that reached the node</u>.
 
-  <u>Entropy</u> on the other hand is a measure of impurity. The formula is $-p(a) * \log (p(a)) -p(b) * \log (p(b)) $. By comparing the entropy before and after the split, we obtain the information gain, it is how much the information gained by doing the split using that particular feature. So the information gain can be calculate by entropy before the split minus the entropy after the split.
+  <u>Entropy</u> on the other hand is a measure of impurity. The formula is $-p(a) * \log (p(a)) -p(b) * \log (p(b)) $. High entropy means being less predictable. Low entropy means being more predictable.
+
+  By comparing the entropy before and after the split, we obtain the <u>information gain</u>, it is how much the information gained by doing the split using that particular feature. So the information gain can be calculate by entropy before the split minus the entropy after the split. If the IG=0, then the split is completely uninformative. If the IG is entropy before the split, then the split is completely informative.
 
   <u>Gini index</u> is another commonly used measure of purity. The formula of gini index is 1 minus the <u>squared probability</u> of each class. The optimal feature to split is chosen by minimizing the <u>weighted sum</u> of Gini index in each child node.
 
+* **How to build a Decision Tree specifically?**
+
+  A decision tree is built top-down from a root node and involved partitioning the data into subsets that contain instances with similar values.
+
+  Steps to build a DT
+
+  1. Calculate entropy of the target $H(Y) = -\sum_{i=1}^c p(Y=i)\log_2 p(i)$.
+
+  2. Calculate conditional entropy for the target and each feature (measure the uncertainty associated with target given each feature): $H(Y|X_1),H(Y|X_2)$ (Note that they should be smaller than $H(Y)$)
+
+  3. Calculate information gain for each feature
+
+     $IG(Y,X_1) = H(Y) -H(Y|X_1)\\IG(Y,X_2) = H(Y) -H(Y|X_2)$
+
+  4. Choose attribute with the largest IG as the decision node.
+
+     A branch with entropy of 0 is a leaf node. A branch with entropy more than 0 needs further splitting.
+
+  5. Recurse on non-leaf branches until all data is classified.
+
 * **What is "stopping condition" in a decision tree?**
 
-  To avoid overfitting, we could
+  To avoid overfitting, we could (limit the size of the tree)
 
   - Stop the algorithm at a particular depth. (=<u>not too deep</u>)
   - Don't split a region if all instances in the region belong to the same class. (=<u>stop when subtree is pure</u>)
@@ -163,9 +359,30 @@
   
 * **Why is using FPR and TPR not as good as precision and recall for evaluating models with unbalanced data?**
 
+  When dealing with unbalanced data, some metrics might not be able to correctly reflect model performance. 
+
+  <u>Definition</u>:
+
+  In ROC curve, we look at TPR (True Positive Rate) = # True Positives / # Positives = Recall = TP / (FN + TP), and FPR (False Positive Rate) = # False Positives / # Negatives = FP / (TN + FP). ROC curve consists of many TPR and FPR through various probability thresholds.
+
+  Recall = # True Positives / # Positives = TP / (TP + FN)
+
+  Precision = # True Positives / # Predicted Positives = TP / (TP + FP). 
+
+  <u>Difference</u>:
+
+  The main difference is between precision and FPR. Precision measures the probability of a sample classified as positive to actually be positive. FPR measures the proportion of false positives within the negative samples.
+
+  <u>Comparison</u>:
+
+  <u>If there are a large number of negative samples, precision is better.</u> If the number of negative samples is large, TN is large and the denominator of the FPR is large. So FPR would be small and the FP is hard to detect. However, precision is not affected by a large number of negatives, because it measures the number of TP out of the predicted positives. 
+
+  <u>All in all, precision measures the probability of correct detection of positive values, while FPR and TPR (ROC) measure the ability to distinguish between the classes.</u>
+
 ## 4. Ensemble
 
 * **A summary of Ensembles**
+  
   * Ensembles combine classifiers to improve performance. 
   * Boosting 
     * Reduce bias. 
@@ -177,16 +394,14 @@
     * Bias isn’t changed
     * Parallel. 
     * Minimizes correlation between ensemble elements.
-
+  
 * **What is bagging? Why (not) bagging?** 
 
-  Bagging is an <u>ensemble</u> meta-algorithm combining predictions from multiple-decision trees through a <u>majority voting</u> mechanism.
-
-  Bagging is a <u>greedy</u> algorithm. We always choose the feature with the most impact: i.e. the most informative gain.
+  <u>Bootstrap aggregation</u>, or bagging, is a popular ensemble method that fits a decision tree on different bootstrap samples of the training dataset, and combines predictions from multiple-decision trees through a <u>majority voting</u> mechanism.
 
   The key idea is: One way to adjust for the <u>high variance</u> of the output of an experiment is to perform the experiment multiple times and then average the results.
 
-  1. <u>Bootstrap</u>: we generate multiple samples of training data, via bootstrapping. We train a full decision tree on each sample of data.
+  1. <u>Bootstrap</u>: we generate multiple samples of training data, via bootstrapping. It involves selecting examples randomly with replacement. We train a full decision tree on each sample of data.
   2. <u>AGgregatiING</u>: for a given input, we output the averaged outputs of all the models for that input.
 
   Merits:
@@ -232,13 +447,13 @@
 
   When we have a lot of predictors that are completely independent of the response and one overwhelmingly influential predictor.
 
-* **What is Boosting?**
-
-  It trains a large number of “weak” learners <u>in sequence</u>. A weak learner is a constrained model (limit the max depth of each decision tree). Each one in the sequence focuses on <u>learning from the mistakes of the one before it</u>. By <u>more heavily weighting in the mistakes in the next tree</u> (the correct predictions are identified and less heavily weighted in the next tree), our next tree will learn from the mistakes. Boosting additively combines all the weak learners into a single strong learner, and gets a boosted tree. The ensemble is a <u>linear combination</u> of the simple trees, and is more expressive.
-
 * **Are bagging or random forest models independent of each other, can they be trained in a parallel fashion?**
 
   Yes. They train a bunch of individual / independent models in a parallel way. Each model is trained by a random subset of data.
+
+* **What is Boosting?**
+
+  It trains a large number of "weak" learners <u>in sequence</u>. A weak learner is a constrained model (limit the max depth of each decision tree). Each one in the sequence focuses on <u>learning from the mistakes of the one before it</u>. By <u>more heavily weighting in the mistakes in the next tree</u> (the correct predictions are identified and less heavily weighted in the next tree), our next tree will learn from the mistakes. Boosting additively combines all the weak learners into a single strong learner, and gets a boosted tree. The ensemble is a <u>linear combination</u> of the simple trees, and is more expressive.
 
 * **Compare bagging and boosting?**
 
