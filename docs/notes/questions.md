@@ -404,6 +404,13 @@
   1. <u>Bootstrap</u>: we generate multiple samples of training data, via bootstrapping. It involves selecting examples randomly with replacement. We train a full decision tree on each sample of data.
   2. <u>AGgregatiING</u>: for a given input, we output the averaged outputs of all the models for that input.
 
+  Steps:
+
+  1. Multiple subsets are created from the original dataset by bootstrapping, selecting observations with replacement.
+  2. A base model (weak model) is created on each of these subsets.
+  3. The models run in parallel and are independent of each other.
+  4. The final predictions are determined by combining the predictions from all the models.
+
   Merits:
 
   * <u>High expressiveness</u>: by using larger trees it is able to approximate complex functions and decision boundaries.
@@ -453,11 +460,59 @@
 
 * **What is Boosting?**
 
+  Boosting is a sequential process, where each subsequent model attempts to correct the errors of the previous model. The succeeding models are dependent on the previous model. In this technique, learners are learned sequentially with early learners fitting simple models to the data and then analyzing data for errors. In other words, we fit consecutive trees (random sample) and at every step, the goal is to solve for net error from the prior tree. When an input is misclassified by a hypothesis, its weight is increased so that next hypothesis is more likely to classify it correctly. By combining the whole set at the end converts weak learners into better performing model.
+
   It trains a large number of "weak" learners <u>in sequence</u>. A weak learner is a constrained model (limit the max depth of each decision tree). Each one in the sequence focuses on <u>learning from the mistakes of the one before it</u>. By <u>more heavily weighting in the mistakes in the next tree</u> (the correct predictions are identified and less heavily weighted in the next tree), our next tree will learn from the mistakes. Boosting additively combines all the weak learners into a single strong learner, and gets a boosted tree. The ensemble is a <u>linear combination</u> of the simple trees, and is more expressive.
+
+  Steps:
+
+  1. A subset is created from the original dataset. Initially, all data points are given equal weights. A base model is created on this subset. This model is used to make predictions on the whole dataset.
+  2. Errors are calculated using the actual values and predicted values. The observations which are incorrectly predicted, are given higher weights. Another model is created and predictions are made on the dataset. This model tries to correct the errors from the previous model. 
+  3. Similarly, multiple models are created, each correcting the errors of the previous model. The final model (strong learner) is the weighted mean of all the models (weak learners).
 
 * **Compare bagging and boosting?**
 
   https://www.kaggle.com/prashant111/bagging-vs-boosting
+
+  Main Differences:
+
+  * Bootstrapping
+    - Bagging and Boosting get N learners by generating additional data in the training stage.
+    - N new training data sets are produced by random sampling with replacement from the original set.
+    - By sampling with replacement some observations may be repeated in each new training data set.
+    - In the case of Bagging, any element has the same probability to appear in a new data set.
+    - However, for Boosting the observations are weighted and therefore some of them will take part in the new sets more often.
+    - These multiple sets are used to train the same learner algorithm and therefore different classifiers are produced.
+  * Boosting builds the new learner in a sequential way (while bagging in parallel)
+    * In Boosting algorithms each classifier is trained on data, taking into account the previous classifiers’ success.
+    * After each training step, the weights are redistributed. Misclassified data increases its weights to emphasise the most difficult cases.
+    * In this way, subsequent learners will focus on them during their training.
+  * Classification
+    * To predict the class of new data we only need to apply the N learners to the new observations. In Bagging the result is obtained by averaging the responses of the N learners (or majority vote). However, Boosting assigns a second set of weights, this time for the N classifiers, in order to take a weighted average of their estimates.
+    * In the Boosting training stage, the algorithm allocates weights to each resulting model. A learner with good a classification result on the training data will be assigned a higher weight than a poor one. So when evaluating a new learner, Boosting needs to keep track of learners’ errors, too.
+    * Some of the Boosting techniques include an extra-condition to keep or discard a single learner. For example, in AdaBoost, the most renowned, an error less than 50% is required to maintain the model; otherwise, the iteration is repeated until achieving a learner better than a random guess.
+
+* **Similarities and Differences between bagging and boosting?**
+
+  Similarity:
+
+  * Both are ensemble methods to get N learners from 1 learner.
+  * Both generate several training data sets by random sampling. 
+  * Both make the final decision by averaging the N learners (or taking the majority of them i.e Majority Voting).
+  * Both are good at reducing variance and provide higher stability.
+
+  Differences:
+
+  * **Bagging** is the simplest way of combining predictions that belong to the same type, while **Boosting** is a way of combining predictions that belong to the different types.
+  * **Bagging** aims to decrease variance, not bias, while **Boosting** aims to decrease bias, not variance.
+  * In **Bagging** each model receives equal weight, whereas in **Boosting** models are weighted according to their performance.
+  * In **Bagging** each model is built independently, whereas in **Boosting** new models are influenced by performance of previously built models.
+  * In **Bagging** different training data subsets are randomly drawn with replacement from the entire training dataset. In **Boosting** every new subsets contains the elements that were misclassified by previous models.
+  * **Bagging** tries to solve over-fitting problem, while **Boosting** tries to reduce bias.
+  * If the classifier is unstable (high variance), then we should apply **Bagging**. If the classifier is stable and simple (high bias) then we should apply **Boosting**.
+  * **Bagging** is extended to Random forest model, while **Boosting** is extended to **Gradient boosting**.
+
+* **Compare boosting trees and random forest?**
 
   <u>Boosting trees</u>:
 
@@ -473,6 +528,18 @@
   * All trees are built in parallel. The final model take the majority for classification or average for regression.
   * Bagging performs variance reduction on complex trees which are easily overfitting.
 
+* **Bagging or Boosting?**
+
+  It depends on the problem and the data.
+
+  Both bagging and boosting decrease the variance of your single estimate as they combine several estimates from different models. So the result may be a model with higher stability and robustness.
+  
+  If the problem is that the single model gets a very low performance, bagging will rarely a good choice to reduce bias. However, boosting could generate a combined model with lower errors.
+  
+  If the problem is that the single model is overfitting, then bagging is the better option. Boosting does not help to avoid overfitting.
+  
+  Since boosting is faced with overfitting problems, bagging is effective more often than boosting.
+  
 * **What is AdaBoost?**
 
   AdaBoost is adaptive boosting. It is adaptive in the sense that <u>subsequent weak learners are tweaked in favor of those instances misclassified by previous classifiers</u>. The model is adapted to put more weight on misclassified samples and less weight on correctly classified samples. The final prediction is a <u>weighted average of all the weak learners, where more weight is placed on stronger learners</u>. Eventually, Adaboost minimizes a differentiable error function (<u>exponential loss</u>: differentiable with respect to $\widehat{y}$ and it is an <u>upper bound of error</u>).
