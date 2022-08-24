@@ -534,7 +534,7 @@
 
   Both bagging and boosting decrease the variance of your single estimate as they combine several estimates from different models. So the result may be a model with higher stability and robustness.
   
-  If the problem is that the single model gets a very low performance, bagging will rarely a good choice to reduce bias. However, boosting could generate a combined model with lower errors.
+  If the problem is that the single model gets a very low performance, bagging will rarely be a good choice to reduce bias. However, boosting could generate a combined model with lower errors.
   
   If the problem is that the single model is overfitting, then bagging is the better option. Boosting does not help to avoid overfitting.
   
@@ -542,7 +542,11 @@
   
 * **What is AdaBoost?**
 
-  AdaBoost is adaptive boosting. It is adaptive in the sense that <u>subsequent weak learners are tweaked in favor of those instances misclassified by previous classifiers</u>. The model is adapted to put more weight on misclassified samples and less weight on correctly classified samples. The final prediction is a <u>weighted average of all the weak learners, where more weight is placed on stronger learners</u>. Eventually, Adaboost minimizes a differentiable error function (<u>exponential loss</u>: differentiable with respect to $\widehat{y}$ and it is an <u>upper bound of error</u>).
+  AdaBoost is the first designed boosting algorithm with a particular loss function. 
+
+  AdaBoost is adaptive boosting. It is adaptive in the sense that <u>subsequent weak learners are tweaked in favor of those instances misclassified by previous classifiers</u>. The model is adapted to put more weight on misclassified samples and less weight on correctly classified samples. The final prediction is a <u>weighted average of all the weak learners, where more weight is placed on stronger learners</u>.
+
+  The technique of Boosting uses various loss functions. In case of AdaBoost, it minimizes the exponential loss function that can make the algorithm sensitive to the outliers.
 
 * **How does AdaBoost get different splits in each weak learner?**
 
@@ -561,15 +565,15 @@
 * **Compare AdaBoost and Gradient Boosting?**
 
   * <u>Loss function</u>: 
-    * AdaBoost is regarded as a special case of Gradient Boosting in terms of loss function. AdaBoost minimizes a particular loss function - exponential error function. 
-    * Gradient Boosting is a generic algorithm which is more flexible. For any loss function, we can derive a gradient boosting algorithm.
+    * AdaBoost is regarded as a special case of Gradient Boosting in terms of loss function. AdaBoost minimizes a particular loss function - exponential loss function that can make the algorithm sensitive to the outliers. 
+    * Gradient Boosting is a generic algorithm which is more flexible. Any differentiable loss function can be used.
   * <u>Strategy of improving models</u>: 
     * In AdaBoost, "shortcomings" are identified by <u>high-weight data points</u>. At each iteration, AdaBoost <u>changes the sample distribution</u> by modifying the weights attached to each of the instances. It increases the weights of the wrongly predicted instances and decreases the ones of the correctly predicted instances. The weak learner thus focuses more on the difficult instances. 
     * In Gradient Boosting, "shortcomings" are identified by <u>gradients</u>. The weak learner <u>trains on the remaining errors</u> (so-called pseudo-residuals) of the strong learner. It is another way to give more importance to the difficult instances. At each iteration, the pseudo-residuals are computed and a weak learner is fitted to these pseudo-residuals.
     * Both high-weight data points and gradients tell us how to improve the model.
   * <u>Strategy of adding models</u>: 
-    * All the learners have <u>equal weights</u> in the case of Gradient Boosting. The weight is usually set as the <u>learning rate</u> which is small in magnitude. The contribution of the weak learner is made by <u>minimizing the overall error of the strong learner</u>, by gradient descent optimization process.
     * For AdaBoost, the final prediction is based on a <u>majority vote</u> of the weak learners’ predictions. The weak learners are added sequentially to the strong one weighted by their individual <u>accuracy / performance</u>  (so-called alpha weight). The higher it performs, the more it contributes to the strong learner.
+    * All the learners have <u>equal weights</u> in the case of Gradient Boosting. The weight is usually set as the <u>learning rate</u> which is small in magnitude. The contribution of the weak learner is made by <u>minimizing the overall error of the strong learner</u>, by gradient descent optimization process.
   * <u>Tasks</u>: 
     * AdaBoost was mainly designed for <u>binary classification</u> problems and can be utilised to boost the performance of decision trees.
     * Gradient Boosting is used to solve the <u>differentiable loss function</u> problem, therefore it can be used for <u>both classification and regression problems</u>. 

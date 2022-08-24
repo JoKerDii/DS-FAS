@@ -1,5 +1,7 @@
 # Advanced Features
 
+Feature engineering is the process of transforming raw data into ‘features’ that better represent the underlying structure and patterns in the data, so that your predictive models can be more accurate when predicting unseen data
+
 ## Statistics and distance based features
 
 * Example of group by
