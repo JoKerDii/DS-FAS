@@ -1,7 +1,21 @@
-<!-- TODO: Complete with your own sidebar structure and enable sidebar in index.html - or delete this file. -->
-- [Home](/#docsifyjs-template)
-- [Fizz]()
-- [Buzz]()
-- Foo
-    * [Bar]()
-    * [Baz]()
+- Data Science
+  - [Overview](basics/overview.md)
+  - Lecture Notes (Q&A)
+    - [Fall 2021](notes/questions.md)
+    - [Spring 2022(1)](notes/questions1.md)
+    - [Spring 2022(2)](notes/questions2.md)
+    - [Spring 2022(3)](notes/questions3.md)
+  - Interview Notes
+    - [ML Interview Notes](notes/MLnotes.md)
+  - DS Project Notes
+    - [Preprocessing](notes/01_preprocessing.md)
+    - [EDA](notes/02_eda.md)
+    - [Metrics](notes/03_metrics.md)
+    - [Hyperparameter Tuning](notes/04_hyperparameter.md)
+    - [General Trick & Tips](notes/05_tips.md)
+    - [Features Engineering](notes/06_features.md)
+    - [Ensembling](notes/07_ensembling.md)
+  - SQL Notes
+    - [Part 1](notes/SQLnotes.md)
+    - [Part 2](notes/SQLnotes2.md)
+    - [Part 3](notes/SQLnotes3.md)

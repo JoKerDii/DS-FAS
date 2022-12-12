@@ -7,9 +7,9 @@
     <meta name="viewport"
         content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
 
-    <title>DocsifyJS Template</title> <!-- TODO: Update. -->
+    <title>Data Science</title> <!-- TODO: Update. -->
     <meta name="description"
-        content="Documentation for the DocsifyJS Template project for making your own DocsifyJS docs site"> <!-- TODO: Update. -->
+        content="Data Science Notes"> <!-- TODO: Update. -->
 
     <link rel="stylesheet" href="//unpkg.com/docsify@4/lib/themes/vue.css"> <!-- TODO: Replace the theme name or leave as is. -->
     
@@ -35,27 +35,34 @@
     <div id="app"></div>
 
     <script>
-        var repoUrl = "https://github.com/MichaelCurrin/docsify-js-template"; // TODO: Update.
+        var repoUrl = "https://github.com/JoKerDii/DS-FAS"; // TODO: Update.
         var editPath = repoUrl + "/blob/master/docs/";
         var editMsg = "📝 Edit on GitHub";
         
         window.$docsify = {
-            name: "DocsifyJS Template", // TODO: Update.
+            name: "Data Science", // TODO: Update.
             repo: repoUrl,
             
             auto2top: true,
             coverpage: true,
-            loadSidebar: false,
+            loadSidebar: true,
             subMaxLevel: 2,
             themeColor: "#3170a7", // TODO: Set your own color.
 
             plugins: [
-                EditOnGithubPlugin.create(editPath, null, editMsg)
+                //EditOnGithubPlugin.create(editPath, null, editMsg)
             ],
         }
 
     </script>
 
+    <script src="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.js"></script>
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.css" />
+    <script src="https://cdn.jsdelivr.net/npm/marked@3"></script>
+    
+    <!-- CDN files for docsify-katex -->
+    <script src="//cdn.jsdelivr.net/npm/docsify-katex@latest/dist/docsify-katex.js"></script>
+    <!-- or <script src="//cdn.jsdelivr.net/gh/upupming/docsify-katex@latest/dist/docsify-katex.js"></script> -->
 </body>
 
 </html>
