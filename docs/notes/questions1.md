@@ -282,15 +282,26 @@
 
   * A main difference operationally between classical methods and bayesian method is the incorporation of a prior distribution.
 
-* **What is the benefits of bayesian statistics?**
+    Frequentist methods do not demand construction of a prior and depend on the probabilities of observed and unobserved data. On the other hand, Bayesian methods depend on a prior and on the probability of the observed data.
 
-  Given a probability model, bayesian analysis makes full use of all the data. 
+  * Frequentist statistics never uses or calculates the probability of the hypothesis, while Bayesian uses probabilities of data and probabilities of both hypothesis. 
 
-  Statistical inferences that are unacceptable must come from inappropriate modeling assumptions, not a problem in the underlying inferential mechanism.
+* **What is the advantages and disadvantages of bayesian statistics?**
 
-  Awkward problems that Frequentists face (e.g. choice of estimators, adjustments for certain types of data) do not arise in Bayesians
+  Bayesian methods and classical methods both have advantages and disadvantages, and there are some similarities. When the sample size is large, Bayesian inference often provides results for parametric models that are very similar to the results produced by frequentist methods. 
 
-  Modern computational methods (MCMC etc) enables fitting even complex data models.
+  Some **advantages** to using Bayesian analysis include the following:
+
+  - It provides a natural and principled way of combining <u>prior information</u> with data, within a solid decision theoretical framework. You can incorporate past information about a parameter and form a prior distribution for future analysis. When new observations become available, the previous posterior distribution can be used as a prior. All inferences logically follow from Bayes’ theorem.
+  - It provides <u>inferences</u> that are conditional on the data and are exact, without reliance on asymptotic approximation. Small sample inference proceeds in the same manner as if one had a large sample. Bayesian analysis also can estimate any functions of parameters directly, without using the "plug-in" method (a way to estimate functionals by plugging the estimated parameters in the functionals).
+  - It provides <u>interpretable</u> answers, such as “the true parameter has a probability of 0.95 of falling in a 95% credible interval.”
+  - It provides a convenient setting for a wide range of <u>models</u>, such as hierarchical models and missing data problems. <u>MCMC</u>, along with other numerical methods, makes computations tractable for virtually all parametric models.
+
+  There are also **disadvantages** to using Bayesian analysis:
+
+  - It does not tell you how to select a <u>prior</u>. There is no correct way to choose a prior. Bayesian inferences require skills to translate subjective prior beliefs into a mathematically formulated prior. If you do not proceed with caution, you can generate misleading results.
+  - It can produce posterior distributions that are heavily influenced by the <u>priors</u>. From a practical point of view, it might sometimes be difficult to convince subject matter experts who do not agree with the validity of the chosen prior.
+  - It often comes with a high <u>computational cost</u>, especially in models with a large number of parameters. In addition, simulations provide slightly <u>different answers</u> unless the same random seed is used. Note that slight variations in simulation results do not contradict the early claim that Bayesian inferences are exact. The posterior distribution of a parameter is exact, given the likelihood function and the priors, while simulation-based estimates of posterior quantities can vary due to the random number generator used in the procedures.
 
 * **What is Bayes Rule?**
   $$

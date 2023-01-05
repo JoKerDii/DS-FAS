@@ -141,9 +141,13 @@
 
      Ideally we want global minimum, but this might not be possible. Some local minima performs as well as the global one, so it is an acceptable stopping point. Some cost functions do not have critical points.
 
-  2. <u>Exploring gradients.</u> 
+  2. <u>Exploding gradients.</u> 
 
-     This is due to cliffs. Can be mitigated using gradient clipping. We set a threshold value, and if the gradient is larger than this threshold, we set it to the threshold.
+     Exploding gradients are a problem when large error gradients accumulate and result in very large updates to neural network model weights during training. 
+
+     One primary cause of gradients exploding lies in too large of a weight initialization and update. Hence, initializing model weights properly is the key to fix this exploding gradients problem. 
+
+     It can also be mitigated using gradient clipping. We set a threshold value, and if the gradient is larger than this threshold, we set it to the threshold.
      $$
      \text{if}\,\, \| {\partial L\over \partial W}\| > u: {\partial L\over \partial W} = \text{sign}({\partial L \over \partial W})u
      $$
@@ -154,6 +158,8 @@
      Poorly conditioned Hessian matrix. High curvature that small steps leads to huge increase. Learning is slow despite strong gradients, because of oscillations.
 
   4. <u>Vanishing gradients</u>
+
+     When there are more layers in the network, the value of the product of derivative decreases until at some point the partial derivative of the loss function approaches a value close to zero, and the partial derivative vanishes. 
 
      The gradient tends to get smaller as we move backward through the hidden layers. This means that neurons in the earlier layers learn much more slowly than neurons in later layers. 
 
