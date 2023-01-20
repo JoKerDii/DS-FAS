@@ -377,6 +377,14 @@
   * Differentiable 
   * Monotonic
   * Expands the range of $\mu$ to the entire real line
+  
+* **Mention some ways to make your model robust to outliers.**
+
+  1. Add regularization so the model will be tolerant of or won't be sensitive to outliers
+  2. Use tree-based models such as random forest and gradient boosting. They are generally less affected by outliers
+  3. Remove or cap outliers with some values. If the distribution is skewed, use IQR to detect outliers (< Q1- 1.5 IQR and > Q3 + 1.5 IQR) and then remove or cap them with some values
+  4. Transform the data. <u>The log transformation is often used to reduce skewness of a measurement variable</u>. If the response variable follows a roughly exponential distribution or is right-skewed, do a log transformation so the data would be as normal as possible.
+  5. Use more robust error metrics such as MAE or Huber loss instead of MSE. Because MSE calculates the squared error, it is sensitive to outliers or errors. MAE calculates the absolute error so it is less sensitive to outliers or errors. Huber loss assigns less weights to outliers so it's less sensitive. 
 
 ## 2. PCA
 
@@ -519,13 +527,25 @@
 
 * **How do we find the optimal solution of a loss function?**
 
-  <u>Gradient descent:</u> 
+  <u>Gradient descent:</u>  
 
-  Initialize a random point, repeatedly update it based on the gradient of loss and a learning rate lambda. 
+  Gradient descent is a generic optimization algorithm for finding optimal solutions to a wide range of problems. The general idea of it is to tweak parameters iteratively in order to minimize a cost function.
 
-  Initialize $w_0$ randomly, for t = 1:T (iterations), update $w$ by rule: $w_{t+1} = w_{t}-\lambda_t \nabla_w L(w_t)$. 
+  * Steps:
 
-  Learning rate $\lambda$: if it's too large, the updates are unstable and can diverge. If it's too small, the updates are stable but very slow.
+    Initialize a random point, repeatedly update it based on the gradient of loss and a learning rate lambda. 
+
+    Initialize $w_0$ randomly, for t = 1:T (iterations), update $w$ by rule: $w_{t+1} = w_{t}-\lambda_t \nabla_w L(w_t)$. 
+
+    Learning rate $\lambda$: if it's too large, the updates are unstable and can diverge. If it's too small, the updates are stable but very slow.
+
+  * Pros: 
+
+    Since the whole data is used to calculate gradients, the algorithm will be stable and reach the minimum of the cost function without bouncing.
+
+  * Cons:
+
+    The iteration process will be very slow if the training size is large.
 
   <u>Gradient descent with Momentum:</u>
 
@@ -537,13 +557,27 @@
 
   <u>Stochastic gradient descent:</u> 
 
-  Considering using all the data is computational expensive, SGD randomly picks a subsample (even one datum works) and compute gradient. 
+  SGD picks up a random instance in the training data at every step and computes the gradient only on that single instance.
 
-  Mini-batch gradient descent: Randomly shuffle examples in the training set and compute the average gradient among samples. People commonly use the term SGD for mini-batch optimization.
+  * Pros: 
 
-  The drawback is it's too noisy. The merit is it's very fast. This method produces an unbiased estimator of the true gradient. This is the basis of optimizing ML algorithms with huge datasets.
+    It makes the training much faster as it only works on one instance at a time. It becomes easier to find an optimal solution with a large dataset.
 
-  Computing gradients using the full dataset is called batch learning, using subsets of data is called mini-batch learning.
+  * Cons: 
+
+    Due to the stochastic (random) nature of this algorithm, the cost function will bounce up and down, decreasing only on average, instead of decreasing until it reaches the minimum. Over time it will end up very close to the minimum, but once it gets there it will continue to bounce around, not settling down there. So it's necessary to use a training schedule for early stopping.
+
+  <u>Mini-batch gradient descent</u>: 
+
+  At each step, mini-batch gradient descent algorithm computes gradients on small random set of instances called mini-batches, instead of using the whole dataset or a single instance.
+
+  * Pros:
+
+    The algorithm's progress space is less erratic than with SGD, especially with large batch sizes. This means the algorithm is very fast. You can get a performance boost from hardware optimization of matrix operations, especially when using GPUs.
+
+  * Cons:
+
+    It might be difficult to escape from local minima.
 
 * **What the different types of cross-validation?**
 
@@ -639,13 +673,13 @@
 
 * **What's the difference between parametric and non-parametric models?**
 
-  * <u>Parametric models</u> are those that require the specification of some parameters before they can be used to make predictions. It requires to identify the function (e.g linear or non-linear function) and identify the parameters of the function.
+  * <u>Parametric models</u> assume that the dataset comes from a certain function with some set of parameters that should be tuned to reach the optimal performance. They require the specification of some parameters before they can be used to make predictions. It requires to identify the function (e.g linear or non-linear function) and identify the parameters of the function.
 
     <u>Example</u> of parametric models include linear algorithms such as Lasso regression, linear regression and to an extent, generalized additive models (GAMs).
 
-  * <u>Non-parametric models</u> do not rely on any specific parameter settings. Building non-parametric models do not make explicit assumptions about the functional form. Therefore, it has the potential to accurately fit a wider range of possible shapes for the actual or true function and have better performance in prediction.
+  * <u>Non-parametric models</u> don't assume anything about the function from which the dataset was sampled. They do not rely on any specific parameter settings. Building non-parametric models do not make explicit assumptions about the functional form. Therefore, it has the potential to accurately fit a wider range of possible shapes for the actual or true function and have better performance in prediction.
 
-    <u>Example</u> of non-parametric models include fully non-linear algorithms such as bagging, boosting, support vector machines, and neural networks (deep learning).
+    <u>Example</u> of non-parametric models include fully non-linear algorithms such as decision tree, random forest, bagging, boosting, support vector machines, and neural networks (deep learning).
 
 * **What is K Nearest Neighbors method?**
 
@@ -685,6 +719,12 @@
   By summarizing the information in the ROC curve, we can compare our classifier against a perfect classifier and a random classifier. 
 
   We can compare models by comparing AUC score, which is the area under the ROC curve.
+
+* **Explain the kernel trick in SVM and why we use it and how to choose what kernel to use.**
+
+  Kernels are used in SVM to map the original input data into a particular higher dimensional space where it will be easier to differentiate data between classes. For example, if we have a binary class data with a ring-like form in 2D space, a linear SVM kernel will not be able to differentiate the two classes well when compared to RBF (radial basis function) kernel, mapping the data into a particular higher dimensional space where the two classes are clearly separable.
+
+  Having domain knowledge can be very helpful in choosing the optimal kernel for problems. Some default rules can also be helpful: for linear problems, we can try linear or logistic kernels; for nonlinear problems, we can use RBF or Gaussian kernels.
 
 * **What is decision tree? Why decision tree?** 
 

@@ -301,3 +301,63 @@
   4. Update $T \leftarrow T+ \lambda^{(i)} T^{(i)}$.
 
   Unlike in the case of gradient boosting for regression, we can analytically solve for the optimal learning rate for AdaBoost, by optimizing the ExpLoss for the $\lambda$. Doing so we get $\lambda ^i = 1/2 \log ({ 1- \epsilon\over \epsilon})$, $\epsilon = \sum^N_{n=1} w_n I(y_n\neq T^{(i)}(x_n))$.
+
+* **What is the k-means algorithm?**
+  1. <u>Randomly assign</u> each observation to one of K clusters at random.
+  2. Repeat the following two steps until clusters do not change:
+     * For each cluster k, compute the <u>cluster centroid</u> $\overline{x_k}$ (<u>The variable-wise average of the observations in cluster k</u>).
+     * Given the K centroids, <u>reassign all observations to clusters based on their closeness to the centroids</u>.
+
+* **What are steps of performing bayesian analysis?**
+
+  1. Formulate a probability model for the data.
+
+     For example, if the outcome is whether the user clicked the button or not, we are going to form a Bernoulli model. 
+
+  2. Decide on a prior distribution for the unknown model parameters.
+
+     (Note: usually improper prior distribution lead to proper posterior distributions, but one needs to check. A proper prior distribution always leads to a proper posterior distribution.)
+
+  3. Observe the data, and construct the likelihood function based on the data.
+
+     (Note: the likelihood function is the joint probability of the data.)
+
+  4. Determine the posterior distribution 
+
+     (Note: Posterior $\propto$ Prior $\times$ Likelihood , obtained by bayes rule. Usually the normalizing constant cannot be determined analytically.)
+
+  5. Summarize important features of the posterior distribution, or calculate quantities of interest based on the posterior distribution.
+
+     * Posterior mean
+
+     * Posterior mode
+
+     * 95% central posterior interval for $\theta$
+
+       Narrower than frequentist 95% confidence interval.
+
+     * Highest posterior density (HPD) region for $\theta$- shortest interval with specified probability. Usually more difficult to compute than central intervals. 
+
+* **How to implement an MCMC sampler to obtain simulated parameter values and do numerical summaries?**
+
+  To obtain simulated parameter values, do:
+
+  1. Run several parallel MCMC samplers with different starting values (preferably widely dispersed)
+  2. Simulate values from the Markov Chains for a <u>'burn in' period</u> (before the Markov Chains have converged to the stationary distribution), and discard the burn-in simulations.
+  3. Save simulated values after burn-in period. These will be the simulated values on which to perform inferential summaries.
+
+  Things need to take care of without packages:
+
+  * Pick a good proposal distribution $\tilde{p}(\Delta)$ for RWM where the jumps are not too big or too small.
+  * Simulate from the probability distributions
+  * Write code to perform Markov Chain simulation, check for convergence, etc.
+
+  With packages: JAGS, pymc3, etc, we need to
+
+  * specify the model for data
+  * specify logistical issues concerning MCMC simulation (starting values, burn-in period, iterations to run after burn-in, etc)
+
+  To summarize model results with the simulated values across all chains after the burn-in iterations:
+
+  * Approximate posterior mean and standard deviations of parameters by their sample counterparts.
+  * Can compute 95% central posterior intervals from the 2.5% and 97.5% of the sample of simulated values.

@@ -1,6 +1,6 @@
 # Machine Learning Concept Q&A (III)
 
-## 1. MLP
+## 1. ANN
 
 * **Types of output units? **
 
@@ -101,6 +101,8 @@
 
 * **What are the SGD optimizers?**
 
+  An optimizer is a function or an algorithm that modifies the attributes of the neural network, such as weights and learning rate. Thus, it helps in reducing the overall loss and improve the accuracy.
+
   There are three variations in the term of SGD: $W_i = W_i - \eta({\partial L_i \over \partial W_i})$
 
   1. Adapt the gradient components ${\partial L_i \over \partial W_i}$
@@ -133,7 +135,7 @@
 
 * **What is back propagation and why?**
 
-  The back propagation in the training process is based on the chain rule of calculus, and it calculates the gradient of the loss w.r.t. the weights. This gradient is used by the optimizer to update the weights to minimize the loss function.
+  Backpropagation is a process involved in training a neural network. It involves taking the error rate of a forward propagation and feeding this loss backward through the neural network layers to fine-tune the weights. Specifically, it computes the gradient of the loss function for a single weight by the <u>chain rule.</u> It efficiently computes one layer at a time, and each weight can be updated using the gradients. 
 
 * **What are the challenges in optimization in NN?**
 
@@ -143,11 +145,17 @@
 
   2. <u>Exploding gradients.</u> 
 
-     Exploding gradients are a problem when large error gradients accumulate and result in very large updates to neural network model weights during training. 
+     Exploding gradient is a problem when large error gradients accumulate and result in very large updates to the weights in a neural network during training. 
+
+     Signs of exploding gradients:
+
+     * The model weights quickly become very large during training
+     * The model weights go to NaN values during training
+     * The error gradient values are consistently above 1.0 for each node and layer during training
 
      One primary cause of gradients exploding lies in too large of a weight initialization and update. Hence, initializing model weights properly is the key to fix this exploding gradients problem. 
 
-     It can also be mitigated using gradient clipping. We set a threshold value, and if the gradient is larger than this threshold, we set it to the threshold.
+     It can also be mitigated using <u>gradient clipping</u>. We set a threshold value, and if the gradient is larger than this threshold, we set it to the threshold.
      $$
      \text{if}\,\, \| {\partial L\over \partial W}\| > u: {\partial L\over \partial W} = \text{sign}({\partial L \over \partial W})u
      $$
@@ -159,9 +167,15 @@
 
   4. <u>Vanishing gradients</u>
 
-     When there are more layers in the network, the value of the product of derivative decreases until at some point the partial derivative of the loss function approaches a value close to zero, and the partial derivative vanishes. 
+     The vanishing gradient problem happens in neural networks with gradient-based learning methods and backpropagation. In these learning methods, each of the weights of the neural network receives an update proportional to the partial derivative of the loss function with respect to the current weight in each iteration of training. Sometimes when gradients become vanishingly small, this prevents the weight to change value.
 
-     The gradient tends to get smaller as we move backward through the hidden layers. This means that neurons in the earlier layers learn much more slowly than neurons in later layers. 
+     When neural network has many hidden layers, the gradients in the earlier layers will become very low as we multiply the derivatives of each layer. As a result, learning in the earlier layers becomes very slow. This problem of vanishing gradient happens when training neural networks with many layers because the gradient diminishes dramatically as it propagates backward through the network.
+     
+     Some ways to fix it:
+     
+     * Use skip / residual connections
+     * Use ReLU or Leaky ReLU rather than sigmoid or tanh activation functions
+     * Use models that help propagate gradients to earlier time steps like in GRUs and LSTMs
 
 * **What is Momentum?**
 
@@ -220,6 +234,8 @@
 
 * **What is Adam optimizer?**
 
+  <u>An optimizer is a function or an algorithm that modifies the attributes of the neural network, such as weights and learning rate.</u> 
+
   Adam is a combination of RMSProp and Momentum. It acts upon
 
   * The gradient component by using momentum, the exponential moving average of gradients (like in momentum)
@@ -232,7 +248,7 @@
   W_i = W_i - {\epsilon \over \delta + \sqrt{r_i}}v_i
   $$
 
-* **Why we need bias correction and how to do that?**
+* **Why we need bias correction and how to do that?** *
 
   1st and 2nd moment gradient estimates are started off with both estimates being zero. Hence those initial values for which the true value is not zero, would bias the result. We are concerned about the bias during this initial phase, while your exponentially weighted moving average is warming up, then bias correction can help you get a better estimate early on.
 
@@ -247,9 +263,9 @@
 
 * **Why do we care parameter initialization and how to do that?** 
 
-  Weight initialization is used to define the initial values for the  parameters in neural network models prior to training the models on a dataset. 
+  Weight initialization is used to define the initial values for the parameters in neural network models prior to training the models on a dataset. 
 
-  Initialization can have a significant impact on convergence in training DNNs and performance of DNNs. Its main objective is to prevent layer activation outputs from exploding or vanishing gradients during the forward propagation, so that the network won't take too long to converge. 
+  Initialization can have a significant impact on convergence in training DNNs and performance of DNNs. Its main objective is to prevent layer activation outputs from exploding or vanishing gradients in the training process, so that the network won't take too long to converge. 
 
   Notice that initializing all weights with zeros would lead the neurons to learn the same features during training. In fact, any constant initialization scheme will perform poorly, because neurons will evolve symmetrically throughout training with identical gradients. 
 
@@ -264,13 +280,13 @@
 
   * <u>Xavier weight initialitzation</u>
 
-    The xavier initialization method is calculated as a random number with a uniform probability distribution (U) between the range -(1/sqrt(n)) and 1/sqrt(n), where *n* is the number of inputs to the node.
+    The xavier initialization method calculates weight as a random number with a uniform probability distribution (U) between the range -(1/sqrt(n)) and 1/sqrt(n), where *n* is the number of inputs to the node.
 
     All weights of layer $\ell$ are initialized randomly from a normal distribution with mean 0 and a same variance across every layer. Biases are initialized with zeros. Xavier initialization works with <u>Tanh or Sigmoid activations</u>.
 
   * <u>Normalized Xavier weight initialization</u>
 
-    The normalized xavier initialization method is calculated as a random number with a uniform probability distribution (U) between the range -(sqrt(6)/sqrt(n + m)) and sqrt(6)/sqrt(n + m), where *n* us the number of inputs to the node (e.g. number of nodes in the previous layer) and *m* is the number of outputs from the layer (e.g. number of nodes in the current layer).
+    The normalized xavier initialization method calculates weight as a random number with a uniform probability distribution (U) between the range -(sqrt(6)/sqrt(n + m)) and sqrt(6)/sqrt(n + m), where *n* us the number of inputs to the node (e.g. number of nodes in the previous layer) and *m* is the number of outputs from the layer (e.g. number of nodes in the current layer).
 
   * <u>Kaiming He initialization</u>
 
@@ -344,15 +360,48 @@
     
   * <u>Batch-normalization</u> 
   
-    <u>Problem</u>: the distribution of the inputs to deep layers can change after each mini-batch when the weights are updated. This change is referred to 'internal covariate shift'.
+    <u>Problem</u>: Usually, a dataset is fed into the network in the form of batches where the distribution of the data differs for every batch size. As a result, there might be chances of vanishing gradient or exploding gradient when it tries to backpropagate. In other words, the distribution of the inputs to deep layers can change after each mini-batch when the weights are updated. This change is referred to 'internal covariate shift'.
   
     <u>Idea</u>: Standardize the inputs to a layer for each mini-batch.
   
-    <u>Benefits</u>: stabilize the learning process and dramatically reduce the number of training epochs.
+    <u>Benefits</u>: stabilize the learning process (robust training of deep layers of the network) and dramatically reduce the number of training epochs (Fast training / convergence to the minimum loss function).
   
     <u>Tips</u>: applied to either the activations of a prior layer or inputs directly. Can be used to multiple network types. More appropriate after the activation function if using sigmoid function or tanh function. More appropriate before the activation function if using ReLU, and it's modern default for most network types. Not good to use both dropout and batch normalization in the same network.
   
-    
+* **What is an activation function? And discuss the use of an activation function.**
+
+  In mathematical terms, the activation function serves as a gate between the current neuron input and its output, going to the next level. Basically, it decides whether neurons should be activated or not. It is used to introduce non-linearity into a neuron network.
+
+  Activation functions make a linear regression model different from a neural network. We need non-linearity to capture more complex features and model more complex variations that simple linear model cannot capture.
+
+  *  <u>Sigmoid function</u>:  $f(x) = {1\over 1+ \exp(-x)}$
+
+    The output is between 0 and 1. It has some problems such as the gradient vanishing on the extremes. And it's computationally expensive since it uses exponentiation operation.
+
+  * <u>ReLU</u>: $f(x) = \max(0,x)$
+
+    It returns 0 if the input is negative and the value of the input if the input is positive. It solves the problem of vanishing gradient for the positive side, however, the problem is still on the negative side. It is fast because we use a linear function in it.
+
+  * <u>Leaky ReLU</u>: $f(x) = ax, x< 0, f(x) = x, x \geq 0$
+
+    It solves the problem of vanishing gradient on both sides. 
+
+  * <u>Softmax</u>:
+
+    It is usually used at the last layer for a classification problem because it returns a set of probabilities, where the sum of them is 1. 
+
+* **What are the reasons why the loss does not decrease in a few epochs?**
+
+  * The model is underfitting the training data / The regularization hyper parameter is quite large
+  * The learning rate is large
+  * The initialization is not proper (e.g. initializing all the weights as 0 does not make the network learn any function)
+  * The result of vanishing gradient problem
+
+* **Why sigmoid or tanh is not preferred to be used as the activation function in the hidden layer of the neural network?**
+
+  Only a narrow range of input can produce non-zero gradients of sigmoid or tanh. Once the input is out of the range, the function satuates. When sigmoid or tanh activation function saturates, their gradients become close to 0. Once saturated, the algorithm cannot update the weights effectively. So sigmoid and tanh prevent the neural network from learning effectively and result in vanishing gradient problem. 
+
+  The vanishing gradient problem can be addressed by ReLU activation function.
 
 ## 2. CNN
 
@@ -745,11 +794,14 @@
 
 * **What is transfer learning?**
 
-  Transfer learning is a research problem in machine learning that focuses on storing knowledge gained while solving one problem and applying it to a different but related problem. Transfer learning is the solution to the situation that we want an image classifier to be trained in a few minutes on a CPU with very little data. We can use pre-trained models with known weights. 
+  Transfer learning is a machine learning method where a model developed for a task is reused as the starting point for a model on the second task. It is a popular approach in deep learning where pre-trained models are used as the starting point for computer vision and natural language processing tasks, because these tasks require vast computing and time resources to develop neural network models.
 
-  The <u>main idea</u> of TL is that, earlier layers of the network learn low level features, that can be adapted to new domains by changing weights at later and fully connected layers.
 
-  <u>Differential learning rate</u>: The main idea is to train different layers at different rate. We can train early conv layer with a smaller learning rate, later conv layer with a larger learning rate, and dense layer with a higher learning rate. 
+* **When is transfer learning useful?**
+
+  Transfer learning is used for tasks where is data is too little to train a full-scale model from the beginning. 
+
+  In models for computer vision tasks, the initial layers have a common behavior of detecting edges, then a little more complex but still abstract features, and so on. Therefore, a pre-trained models' initial layers can be used directly. 
 
 * **What is representation learning in transfer learning?** [revise needed]
 

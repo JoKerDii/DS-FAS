@@ -93,16 +93,11 @@
 
 * **What is k-means clustering? Goal and results? **
 
-  The resulting clusters have two properties:
+  The **main goal** of K-means clustering is to determine K clusters such that the <u>total sum of within-cluster variation $\sum^K_{k=1} W(C_k)$ is minimized</u>. This value is sometimes called <u>inertia</u>.
 
-  * The combination of all clusters is the whole set of data.
-  * All clusters are mutually exclusive.
-
-  The mean goal of K-means clustering is to determine K clusters such that the <u>total sum of within-cluster variation $\sum^K_{k=1} W(C_k)$ is minimized</u>. This value is sometimes called <u>inertia</u>.
-  
   There are two ways to computing <u>within-cluster variation</u> for a particular cluster K:
   
-    * <u>Average of pairwise distances within cluster K</u>.
+  * <u>Average of pairwise distances within cluster K</u>.
       $$
       W(C_k) = {1\over |C_k|} \sum_{i,i' \in C_k} \sum^p_{j=1}(X_{ij} - X_{i'j})^2
       $$
@@ -117,13 +112,37 @@
       $$
   
       * $\overline{x_{jk}}$: is the sample mean of the $X_{ij}$ for $i \in C_k$, or say, the variable-wise average of the observations in cluster k.
+  
+  The resulting clusters have two **properties**:
+  
+  * The combination of all clusters is the whole set of data.
+  * All clusters are mutually exclusive.
 
 * **What is the k-means algorithm?**
+  
+  It starts by partitioning a set of data into K distinct clusters, and then arbitrarily selects centroids of each cluster. It iteratively updates partitions by first assigning the points to the closest cluster, and then updates the centroid, and then repeats this process until convergence.
+  
+  Steps:
+
   1. <u>Randomly assign</u> each observation to one of K clusters at random.
   2. Repeat the following two steps until clusters do not change:
      * For each cluster k, compute the <u>cluster centroid</u> $\overline{x_k}$ (<u>The variable-wise average of the observations in cluster k</u>).
      * Given the K centroids, <u>reassign all observations to clusters based on their closeness to the centroids</u>.
+  
+* **How to find the best value of K for K-means clustering?**
+  
+  * <u>Elbow method</u>
+  
+    Elbow method is a well-known method to find the best value of K in k-means clustering. The intuition behind this technique is that the first few clusters will explain a lot of the variation in the data, while increasing k from a certain k cannot explain much more variance. Therefore, from the graph plotting the explained variation on the y-axis vs the number of clusters K, there is a sharp change in y-axis at some level K. 
 
+    Ps. The explained variation is quantified by <u>within-cluster sum of square errors</u>. For each k, we calculate the <u>total within-cluster sum of squared errors</u>.
+  
+  * <u>Silhouette method</u>
+  
+    Silhouette method measures how similar points are in its cluster compared to other clusters. The calculation requires two quantities: 1) the mean distance between an example to all other examples in the same cluster 2) the mean distance between an example to all the examples in the nearest cluster. 
+    
+    The silhouette coefficient varies between -1 and +1. A value of 1 implies that the point is in the right cluster and the value of -1 implies that it is in the wrong cluster. By plotting the silhouette coefficients on the y-axis and the number of cluster k on the x-axis, we can get an idea of the optimal number of clusters.
+  
 * **The bad and the good of k-means clustering? And solutions to the bad?**
   
     * It requires analyst to pre-specify K in advance. (Though there are ways to optimize K)
