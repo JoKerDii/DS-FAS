@@ -4,7 +4,7 @@
 
 * **What are the tokenization approaches?**
 
-  As a foremost step, we need to split the text into smaller units or *tokens*, since the State of The Art (SOTA) DL architectures (RNNs, GRU, LSTM, transformer based models) in NLP process the raw text at the token level. The entire set of tokens is called *vocabulary*. The size of vocabulary decides the size of training set. There is an area of research on tokenization. Two of the approaches:
+  As a foremost step, we need to <u>split the text into smaller units or *tokens*</u>, since the State of The Art (SOTA) DL architectures (RNNs, GRU, LSTM, transformer based models) in NLP process the raw text at the token level. The entire set of tokens is called *vocabulary*. The size of vocabulary decides the size of training set. There is an area of research on tokenization. Two of the approaches:
 
   * <u>Word tokenization</u>
 
@@ -24,7 +24,7 @@
 
 * **What is a language model and how to evaluate a language model?**
 
-  A *language model* estimates the probability of any sequence of words. The applications of language model is: text recognition, speech recognition, text to speech, sentence prediction, translation, named entity recognition.
+  <u>A *language model* is a probability distribution over words or word sequences. It estimates the probability of any sequence of words</u>. The applications of language model is: text recognition, speech recognition, text to speech, sentence prediction, translation, named entity recognition.
 
   Evaluation methods:
 
@@ -38,7 +38,7 @@
 
   * Formal metric: <u>perplexity (PP)</u>
 
-    PP is the inverse probability of the test set, normalized by the number of words. It measures how confused or perplexed a model is against an unseen sample.
+    <u>In NLP, perplexity is a way of evaluating language models.</u> <u>Perplexity is the inverse probability of the test set, normalized by the number of words. It measures how confused or perplexed a model is against an unseen sample.</u> <u>The best language model is the one that best predicts an unseen dataset, so the smaller perplexity indicates a better model.</u>
 
     Given a sentence of N words $W = (w_1, ..., w_N)$, the language model gives the probability of the sentence $P(w_1, ..., w_N)$, then the perplexity of a sentence is $PP(W) = P(w_1, ..., w_N)^{-1/N}$. The higher probability for a sentence means lower PP. A low PP score means the model learned.
 

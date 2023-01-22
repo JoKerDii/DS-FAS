@@ -135,7 +135,7 @@
   
     Elbow method is a well-known method to find the best value of K in k-means clustering. The intuition behind this technique is that the first few clusters will explain a lot of the variation in the data, while increasing k from a certain k cannot explain much more variance. Therefore, from the graph plotting the explained variation on the y-axis vs the number of clusters K, there is a sharp change in y-axis at some level K. 
 
-    Ps. The explained variation is quantified by <u>within-cluster sum of square errors</u>. For each k, we calculate the <u>total within-cluster sum of squared errors</u>.
+    Ps. The explained variation is quantified by <u>inter-cluster sum of square errors</u>. For each k, we calculate the <u>total inter-cluster sum of squared errors</u>.
   
   * <u>Silhouette method</u>
   

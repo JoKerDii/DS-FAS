@@ -17,9 +17,7 @@
 
 * **What is Statistical Model? **
 
-  We assume that the response variable $Y$ relates to the predictors $X$ through some unknown function $f(X)$:
-
-  $Y = f(X) + \epsilon$
+  We assume that the response variable $Y$ relates to the predictors $X$ through some unknown function $f(X)$: $Y = f(X) + \epsilon$
 
   $f$ is the unknown function expressing the underlying rule for relating $Y$ to $X$. $\epsilon$ is the random amount (unrelated to $X$) that $Y$ differs from the rule $f(X)$.
 
@@ -57,13 +55,15 @@
 
   R-squared shows how much variance in the data is explained by the trained model.
 
-  $R^2 = 1 - {\sum_i (\widehat{y}_i - y_i)^2 \over \sum_i (\overline{y} - y_i)^2}$
+  $R^2 = 1 - {\sum_i (\widehat{y}_i - y_i)^2 \over \sum_i (\overline{y} - y_i)^2}=1-{RSS\over TSS}$
 
   If our model is as good as the mean value, $\overline{y}$, then $R^2 = 0$.
 
   If our model is perfect, then $R^2 = 1$.
 
   $R^2$ can be negative if the model is worse than the average. This can happen when we evaluate the model on the test set.
+
+  R-squared will always increase even if a random feature is added to the model. However, adjusted-R-squared increases only if a feature is contributing to the model performance.
 
 * **What are linear models?**
 
@@ -110,7 +110,7 @@
 
 * **For which models do the unit / scale of the predictors matter?**
 
-  <u>k-NN</u>. Scaling affects distance metric - <u>Euclidean distance measure</u>, which determines what '"neighbor" means. All such distance based algorithms are affected by the scale / magnitude of the variables.
+  <u>k-NN</u>. Scaling affects distance metric - <u>Euclidean distance measure</u>, which determines what '"neighbor" means. <u>All such distance based algorithms are affected by the scale / magnitude of the variables</u>.
 
   <u>Clustering</u>. It is important to standardize variables before running Cluster Analysis. It is because <u>cluster analysis techniques depend on the concept of measuring the distance between the different observations we're trying to cluster</u>. If a variable is measured at a higher scale than the other variables, then whatever measure we use will be overly influenced by that variable.
 
@@ -176,17 +176,15 @@
 
 * **Compare prediction interval vs confidence interval**
 
-  A prediction interval includes a wider range of values than a confidence interval. A prediction interval is less certain than a confidence interval. 
-
-  A prediction interval is an estimated range of values that may contain the value of a single new observation, based on previous data.
+  <u>A prediction interval is an estimated range of values that may contain the value of a single new observation, based on previous data.</u> A prediction interval includes a wider range of values than a confidence interval. A prediction interval is less certain than a confidence interval. 
 
   If you create a regression model, you can use it to develop a prediction interval that can determine where the next data point sampled may appear. <u>Prediction intervals must account for both the uncertainty of estimating a value and the random variation of individual values sampled</u>. This means the prediction interval is always a larger range than the confidence interval.
 
   Comparison:
 
   * Confidence intervals express sampling uncertainty in quantities estimated from many data points. The more data, the less sampling uncertainty, and hence the thinner the interval.
-  * Prediction interval expresses i<u>nherent uncertainty</u> in the particular data point on top of the sampling uncertainty. It's thus wider than the confidence interval.
-
+  * Prediction intervals express i<u>nherent uncertainty</u> in the particular data point on top of the sampling uncertainty. It's thus wider than the confidence interval.
+  
 * **What are the possible methods to obtain feature importance from linear models?**
 
   * Absolute value of the coefficients
@@ -204,7 +202,7 @@
 
   1. <u>State the hypotheses</u>, typically a null hypothesis, $H_0$ and an alternative hypothesis, $H_1$, that is the negation of the former.
   2. <u>Choose a type of analysis and a test statistic</u>, i.e. how to use sample data to evaluate the null hypothesis. Typically, this involves choosing a single test statistic.
-  3. <u>Sample</u> data and <u>compute the test statistic</u>.
+  3. <u>Collect</u> data and <u>compute the test statistic</u>.
   4. Use the value of the test statistic to either <u>reject or not reject</u> the null hypothesis.
 
 * **What is multicollinearity?**
@@ -252,16 +250,16 @@
 
   Differences:
 
-  1. Since Lasso regression tend to produce zero estimates for a number of model parameters - we say that <u>Lasso solutions are sparse</u> - we consider to be a method for <u>variable selection</u>.
+  1. Since Lasso regression tends to produce zero estimates for a number of model parameters - we say that <u>Lasso solutions are sparse</u> - we consider to be a method for <u>variable selection</u>.
   2. In Ridge Regression, the penalty term is proportional to the L2-norm of the coefficients whereas in Lasso Regression, the penalty term is proportional to the L1-norm of the coefficients.
   3. <u>Ridge Regression has a closed form solution</u>, <u>while Lasso Regression does not</u>. We often have to solve this iteratively. In the sklearn package for Lasso regression, there is a parameter called `max_iter` that determines how many iterations we perform.
 
 * **How does Residual Analysis help?**
 
-  We plot residuals vs a predictor x. 
+  We plot a scatter plot of residuals vs a predictor x, and a histogram of residuals. 
 
-  * If there is no obvious relationship between residuals and x. Histogram of residuals is symmetric and normally distributed. Then linear assumption is correct.
-  * If there is an obvious relationship between residuals and x. Histogram of residuals is symmetric but not normally distributed. Then linear assumption is incorrect.
+  * If there is no obvious relationship between residuals and x, and the Histogram of residuals is symmetric and normally distributed. Then linear assumptions are met.
+  * If there is an obvious relationship between residuals and x, and the Histogram of residuals is not normally distributed. Then linear assumptions are violated.
 
 * **What is stepwise variable selection and validation?**
 
@@ -380,11 +378,19 @@
   
 * **Mention some ways to make your model robust to outliers.**
 
-  1. Add regularization so the model will be tolerant of or won't be sensitive to outliers
-  2. Use tree-based models such as random forest and gradient boosting. They are generally less affected by outliers
-  3. Remove or cap outliers with some values. If the distribution is skewed, use IQR to detect outliers (< Q1- 1.5 IQR and > Q3 + 1.5 IQR) and then remove or cap them with some values
-  4. Transform the data. <u>The log transformation is often used to reduce skewness of a measurement variable</u>. If the response variable follows a roughly exponential distribution or is right-skewed, do a log transformation so the data would be as normal as possible.
-  5. Use more robust error metrics such as MAE or Huber loss instead of MSE. Because MSE calculates the squared error, it is sensitive to outliers or errors. MAE calculates the absolute error so it is less sensitive to outliers or errors. Huber loss assigns less weights to outliers so it's less sensitive. 
+  1. Add <u>regularization</u> so the model will be tolerant of or won't be sensitive to outliers
+  2. Use <u>tree-based models</u> such as random forest and gradient boosting. They are generally less affected by outliers
+  3. <u>Remove or cap outliers</u> with some values. If the distribution is skewed, use IQR to detect outliers (< Q1- 1.5 IQR and > Q3 + 1.5 IQR) and then remove or cap them with some values
+  4. <u>Transform</u> the data. <u>The log transformation is often used to reduce skewness of a measurement variable</u>. If the response variable follows a roughly exponential distribution or is right-skewed, do a log transformation so the data would be as normal as possible.
+  5. Use more <u>robust error metrics</u> such as MAE or Huber loss instead of MSE. Because MSE calculates the squared error, it is sensitive to outliers or errors. MAE calculates the absolute error so it is less sensitive to outliers or errors. Huber loss assigns less weights to outliers so it's less sensitive. 
+  
+* **What are the methods for high dimensional feature matrix?**
+
+
+  * Use <u>Lasso regression</u> to reduce the coefficients of some less important features to zero.
+  * Use <u>tree-based model</u> to identify important features, so the less important features can be removed.
+  * Use <u>Principle Component Analysis (PCA)</u> to condense important information to the first k principle components, then the first k PC can be used as the new feature matrix. 
+
 
 ## 2. PCA
 
@@ -410,9 +416,10 @@
   PCA produces a list of p principal components $Z_1, ..., Z_p$ such that
 
   * Each $Z_i$ is a linear combination of the original predictors, and its vector norm is 1.
-* The $Z_i$'s are pairwise orthogonal.
+  
+  The $Z_i$'s are pairwise orthogonal.
   * The $Z_i$'s are ordered in decreasing order in the amount of captured observed variance. That is, the observed data shows more variance in the direction of $Z_1$ than in the direction of $Z_2$.
-
+  
 * **Why (not) PCA?**
 
   PCA is great for
@@ -439,23 +446,25 @@
 
   4. <u>Principal components are orthogonal</u>: PCA explicitly assumes that *intrinsic (abstract) dimensions* are orthogonal, which may not be true. However, this allowes us to use techniques from linear algebra such as the spectral decomposition and thereby, simplify our calculations.
   
-* **What is the math behind PCA? (Simple)**
+* **What is Singular Vector Decomposition (SVD)? Why it is needed in PCA?**
 
-  Let $Z$ be the $n \times p$ matrix consisting of columns $Z_1,..., Z_p$ (The resulting PCA vectors), $X$ be the $n \times p$ matrix of $X_1, ..., X_p$ of the original data variables (each standardized to have mean 0 and variance 1, and without the intercept), and let $W$ be the $p \times p$ matrix whose columns are the eigenvectors of the square matrix $X^T X$, then
+  The conventional method for calculating PCs requires us to compute the full <u>covariance matrix</u>, making it memory expensive and numerically unstable. It turns out SVD is a method that can be used to compute PCA and obtain the PCs to transform our raw dataset.
 
-  $Z_{n \times p} = X_{n\times p} W_{p \times p}$
+  <u>SVD is a decomposition method that decomposes an arbitrary matrix A into a set of of related matrices</u>: $A = U\Sigma V^T$. 
 
-  To implement PCA, perform the following steps:
+  * $\Sigma$ is $r \times r$ diagonal matrix, called singular values.
+  * $U$ is $m \times r$ orthonormal matrix
+  * $V$ is $n \times r$ orthonormal matrix
+    * Orthogonal matrix: a square matrix where the inner product of any two columns is zero; 
+    * Orthonormal matrix: the columns are unit vectors.
+  
+* **What is the math behind PCA ?**
 
-  1. Standardize each of your predictors (so they each have mean = 0, variance =1).
-  2. Calculate the eigenvectors of the $X^T X$ matrix and create the matrix with those columns, $W$, in order from largest to smallest eigenvalue.
-  3. Use matrix multiplication to determine $Z=XW$.
-
-* **What is the math behind PCA ? (Complex)**
+  Let $Z$ be the $n \times p$ matrix consisting of columns $Z_1,..., Z_p$ (The resulting PCA vectors), $X$ be the $n \times p$ matrix of $X_1, ..., X_p$ of the original data variables (each standardized to have mean 0 and variance 1, and without the intercept), and let $W$ be the $p \times k$ matrix whose columns are the first $k$ eigenvectors of the covariance matrix of the square matrix $X^T X$, then the selected k dimensional principle components are $Z_{n \times p} = X_{n\times p} W_{p \times p}$.
 
   1. Consider the <u>data matrix</u> $X \in R^{n \times p}$. We center the predictors by subtracting the sample mean. Then the <u>centered data matrix</u> is $\stackrel{\sim}{X} = (\stackrel{\rightarrow}{x}_1 - \widehat{\mu}_1, ..., \stackrel{\rightarrow}{x}_p - \widehat{\mu}_p)$. 
 
-  2. Consider the <u>Covariance Matrix</u> $S = {1\over n-1} \stackrel{\sim}{X}^T \stackrel{\sim}{X}$. It is symmetric, so it permits an orthonormal eigen-basis ($V$) and eigen-decomposition.
+  2. Calculate the <u>Covariance Matrix</u> (or say correlation matrix if data is standardized) $S = {1\over n-1} \stackrel{\sim}{X}^T \stackrel{\sim}{X}$. It is symmetric, so it permits an orthonormal eigen-basis ($V$) and eigen-decomposition.
 
   3. <u>Compute eigenvectors and eigenvalues</u> from the covariance matrix $S$.
 
@@ -471,7 +480,7 @@
 
   6. <u>Transform</u> the samples onto the new subspace.
 
-     $y_{n \times k} = x W$.
+     $Y_{n \times k} = X W$.
 
 * **How to perform iterative PCA for imputation?**
 
@@ -591,7 +600,7 @@
 
 * **What is Logistic Regression?**
 
-  <u>Logistic Regression</u> addresses the problem of estimating a probability $P(y=1)$, to be outside the range of $[0,1]$. The logistic regression model uses a function, called the <u>logistic function</u>, to model $P(y=1)$.
+  <u>Logistic Regression</u> addresses the problem of estimating a probability $P(y=1)$, to be outside the range of $[0,1]$. The logistic regression model uses a function, called the <u>logistic function</u>, to model the probability of an event $P(y=1)$.
 
   $P(y=1) = {exp(\beta_0 + \beta_1 X) \over 1 + exp(\beta_0 + \beta_1 X)} = {1\over 1+exp(-(\beta_0 + \beta_1 X))}$
 
@@ -603,7 +612,7 @@
 
   $\log({P(Y=1) \over 1-P(Y=1)}) = \beta_0 + \beta_1 X$
 
-  Logistic regression models the <u>log-odds</u> with a linear function of the predictors or features, $X$. This gives us the natural interpretation of the estimates similar to linear regression: a one unit change in $X$ is associated with a $\beta_1$ change in the log-odds of success ($Y=1$); or better yet, a one unit change in $X$ is associated with an $exp(\beta_1)$ multiplicate change in the odds of success ($Y=1$).
+  <u>Logistic regression models the log-odds of success with a linear function of the predictors or features, $X$. This gives us the natural interpretation of the estimates similar to linear regression: a one unit change in $X$ is associated with a $\beta_1$ change in the log-odds of success ($Y=1$); or better yet, a one unit change in $X$ is associated with an $exp(\beta_1)$ multiplicate change in the odds of success ($Y=1$).</u>
 
 * **Estimation in logistic regression**
 
@@ -649,7 +658,7 @@
 
   <u>Pros:</u>
 
-  Quick to train, convex loss. Cross-entropy objective function for logistic regression is convex.
+  Quick to train, convex loss. <u>Cross-entropy objective function for logistic regression is convex.</u>
 
   Good accuracy for many simple data sets
 
@@ -722,13 +731,13 @@
 
 * **Explain the kernel trick in SVM and why we use it and how to choose what kernel to use.**
 
-  Kernels are used in SVM to map the original input data into a particular higher dimensional space where it will be easier to differentiate data between classes. For example, if we have a binary class data with a ring-like form in 2D space, a linear SVM kernel will not be able to differentiate the two classes well when compared to RBF (radial basis function) kernel, mapping the data into a particular higher dimensional space where the two classes are clearly separable.
+  <u>Kernels are used in SVM to map the original input data into a higher dimensional space where it will be easier to separate data into classes.</u> For example, if we have a binary class data with a ring-like form in 2D space, a linear SVM kernel will not be able to separate the two classes well when compared to RBF (radial basis function) kernel, mapping the data into a particular higher dimensional space where the two classes are clearly separable.
 
-  Having domain knowledge can be very helpful in choosing the optimal kernel for problems. Some default rules can also be helpful: for linear problems, we can try linear or logistic kernels; for nonlinear problems, we can use RBF or Gaussian kernels.
+  Having domain knowledge can be very helpful in choosing the optimal kernel for problems. Some default rules are also helpful: for linear problems, we can try linear or logistic kernels; for nonlinear problems, we can use RBF or Gaussian kernels.
 
 * **What is decision tree? Why decision tree?** 
 
-  Decision tree is a graphical representation of making a decision based on certain conditions.
+  <u>Decision tree is a graphical representation of making a decision based on certain conditions.</u>
 
   <u>Decision tree properties:</u>
 
@@ -753,7 +762,7 @@
 
 * **Difference of decision tree on classification and regression?**
 
-  Suppose each path from the room to a leaf is a region R of input space. Let a set of points be the training examples that fall into R.
+  Suppose each path from the root to a leaf is a region R of input space. Let a set of points be the training examples that fall into R.
 
   For classification, we return the <u>majority</u> class in the points of each leaf node.
 
@@ -761,13 +770,13 @@
 
 * **How does a Decision Tree decide on its splits (what is the criteria for a split point)?**
 
-  It finds the feature that best splits the target class into the purest possible children nodes. Eventually, decision tree aims to achieve the minimal average classification error.
+  DT finds the feature that best splits the target class into the purest possible children nodes. Eventually, decision tree aims to achieve the minimal average classification error.
 
   * The measure of purity is called the <u>information</u>. It represents the <u>expected amount of information that would be needed to specify whether a new instance should be classified 0 or 1, given the example that reached the node</u>.
 
   * <u>Entropy</u> on the other hand is a measure of impurity. The formula is $-p(a) * \log (p(a)) -p(b) * \log (p(b)) $. High entropy means being less predictable. Low entropy means being more predictable.
 
-    By comparing the entropy before and after the split, we obtain the <u>information gain</u>, it is  how much the information gained by doing the split using that particular feature. So the information gain can be calculate by entropy before the split minus the entropy after the split. If the IG=0, then the split is completely uninformative. If the IG is entropy before the split, then the split is completely informative.
+    By comparing the entropy before and after the split, we obtain the <u>information gain</u>, it is how much the information gained by doing the split using that particular feature. So the information gain can be calculate by entropy before the split minus the entropy after the split. If the IG=0, then the split is completely uninformative. If the IG is entropy before the split, then the split is completely informative.
   
   
     * <u>Gini index</u> is another commonly used measure of impurity. The formula of gini index is 1 minus the <u>squared probability</u> of each class. The optimal feature to split is chosen by minimizing the <u>weighted sum</u> of Gini index in each child node.
@@ -804,15 +813,15 @@
   
   4. Choose the feature with the largest IG as the decision node.
   
-     A branch with entropy of 0 is a leaf node. A branch with entropy more than 0 needs further splitting.
-  
   5. Recurse on non-leaf branches until all data is classified.
+  
+     A branch with entropy of 0 is a leaf node. A branch with entropy more than 0 needs further splitting.
   
 * **Why are decision trees greedy?**
 
   Decision trees are <u>NP-complete</u>, there is no way to find the global minima i.e. the best tree unless we use brute force and try all possible combinations. In practice this is infeasible. Consequently, practical decision-tree learning algorithms are based on <u>heuristic algorithms such as the greedy algorithm where locally optimal decisions are made at each node</u>. 
 
-  Hueristic algorithms are designed to solve problems in a faster more efficient method by sacrificing optimality, accuracy or precision in favor of speed. Hueristic algorithms are often used to solve NP-complete problems. Such algorithms <u>cannot guarantee to return the globally optimal decision tree</u>. This can be mitigated by training multiple trees in an ensemble learner, where the features and samples are randomly sampled with replacement (Bagging).
+  Hueristic algorithms are designed to solve problems in a faster and more efficient method by sacrificing optimality, accuracy or precision in favor of speed. Hueristic algorithms are often used to solve NP-complete problems. Such algorithms <u>cannot guarantee to return the globally optimal decision tree</u>. This can be mitigated by training multiple trees in an ensemble learner, where the features and samples are randomly sampled with replacement (Bagging).
 
 * **How does decision tree split on categorical variable?**
 
@@ -859,7 +868,7 @@
 
 * **How does a decision trees make prediction for classification and for regression?**
 
-  For classification ,we label each region in the model with the label of the class where the majority of the points within the region belong to.
+  For classification, we label each region in the model with the label of the class where the majority of the points within the region belong to.
 
   For regression, we predict with the average of the output values of the training points contained in the region.
 
@@ -956,9 +965,10 @@
 * **What are the hyperparameters to tune in Random Forest?**
 
   * The number of predictors to randomly selected at each split
-* The total number of trees in the ensemble
+  
+  The total number of trees in the ensemble
   * The maximum depth or minimum leaf node size
-
+  
 * **How to measure the feature importance in Random Forest?**
 
   1. <u>Mean Decrease in Impurity (MDI)</u>
@@ -1071,7 +1081,7 @@
   * Both are ensemble methods to get N learners from 1 learner.
   * Both generate several training data sets by random sampling. 
   * Both make the final decision by averaging the N learners (or taking the majority of them i.e Majority Voting).
-  * Both are good at reducing variance and provide higher stability.
+  * Both provide higher stability.
 
   Differences:
 
