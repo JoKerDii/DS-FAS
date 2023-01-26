@@ -878,21 +878,23 @@
 
   <u>Definition</u>:
 
-  In ROC curve, we look at TPR (True Positive Rate) = # True Positives / # Positives = Recall = TP / (FN + TP), and FPR (False Positive Rate) = # False Positives / # Negatives = FP / (TN + FP). ROC curve consists of many TPR and FPR through various probability thresholds.
+  In ROC curve, we look at **TPR** (True Positive Rate) = # True Positives / # Positives = Recall = TP / (FN + TP), and **FPR** (False Positive Rate) = # False Positives / # Negatives = FP / (TN + FP). ROC curve consists of many TPR and FPR through various probability thresholds.
 
-  Recall = # True Positives / # Positives = TP / (TP + FN)
+  **Recall** = sensitivity = # True Positives / # Positives = TP / (TP + FN).
 
-  Precision = # True Positives / # Predicted Positives = TP / (TP + FP). 
+  **Precision** = # True Positives / # Predicted Positives = TP / (TP + FP). 
 
   <u>Difference</u>:
 
-  The main difference is between precision and FPR. Precision measures the probability of a sample classified as positive to actually be positive. FPR measures the proportion of false positives within the negative samples.
+  The main difference is between precision and FPR. Precision measures the probability of a sample classified as positive to actually be positive. FPR measures the proportion of false positives within the negative samples. Precision measures the probability of correctly detecting positive values, while FPR and TPR (ROC) measure the ability to distinguish between the classes.
 
-  <u>Comparison</u>:
+  <u>Reasoning</u>:
 
-  <u>If there are a large number of negative samples, precision is better.</u> If the number of negative samples is large, TN is large and the denominator of the FPR is large. So FPR would be small and the FP is hard to detect. However, precision is not affected by a large number of negatives, because it measures the number of TP out of the predicted positives. 
+  If there are a large number of negative samples, precision is better. FPR can be reduced simply by increasing the True Negatives, while True Negatives do not contribute to increasing Precision. Precision can only be improved if there are more True Positives. Therefore, precision is not affected by a large number of negatives, and not fooled by a model predicting all data as negatives. Accuracy and AUC can be fooled by predicting a large number of negatives.
 
-  <u>All in all, precision measures the probability of correct detection of positive values, while FPR and TPR (ROC) measure the ability to distinguish between the classes.</u>
+  In general, we want high precision and high recall, meaning that we want low False Positives and low False Negative, or say, all predictions are correct. A model with high recall but low precision returns many Positives, but most of them are incorrect comparing to the ground truth. On the other hand, a model with high precision but low recall returns very few Positives (many Negatives), but most of them are correct (more False Negatives).
+
+  We can improving F1-score to achieve the goal of improving both precision and recall. If either precision of recall is low, F1-score will be low. F1-score will be high only if both precision and recall are high.
 
 * **Does multi-collinearity cause problem to decision tree?**
 

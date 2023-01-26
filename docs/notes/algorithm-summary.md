@@ -1,4 +1,4 @@
-# ML Algorithms Summary
+# Algorithms Summary
 
 * **What is hypothesis testing?**
 
