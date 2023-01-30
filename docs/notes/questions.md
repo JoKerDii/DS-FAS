@@ -116,7 +116,7 @@
 
   <u>Principal Component Analysis (PCA)</u>. Prior to PCA, it is critical to standardize variables. It is because <u>PCA gives more weight to those variables that have higher variances</u> than to those variables that have very low variances. In effect the results of the analysis will depend on what units of measurement are used to measure each variable. Standardizing raw values makes equal variance so high weight is not assigned to variables having higher variances.
 
-  <u>Support Vector Machine (SVM)</u>. <u>SVM model is optimized by maximizing the distance between hyperplane and the support vectors</u> so it is required to scale variables prior to training a SVM model.
+  <u>Support Vector Machine (SVM)</u>. <u>SVM model is optimized by maximizing the distance between hyperplane and the support vectors</u> so it is required to scale variables prior to training a SVM model. The distance between two observations will differ for scaled and non-scaled cases, leading to different models being generated.
 
   <u>Lasso and Ridge Regression</u>. <u>They put constraints on the size of the coefficients associated to each variable</u>. However, this value will depend on the magnitude of each variable.
 
@@ -387,9 +387,19 @@
 * **What are the methods for high dimensional feature matrix?**
 
 
-  * Use <u>Lasso regression</u> to reduce the coefficients of some less important features to zero.
-  * Use <u>tree-based model</u> to identify important features, so the less important features can be removed.
-  * Use <u>Principle Component Analysis (PCA)</u> to condense important information to the first k principle components, then the first k PC can be used as the new feature matrix. 
+    * Use <u>Lasso regression</u> to reduce the coefficients of some less important features to zero.
+
+
+    * Use <u>tree-based model</u> to identify important features, so the less important features can be removed.
+
+
+    * Use <u>Principle Component Analysis (PCA)</u> to condense important information to the first k principle components, then the first k PC can be used as the new feature matrix. 
+
+* **What are loss functions and cost functions? What is the difference?**
+
+  The loss function is the measure of the performance of the model on a single training example, whereas the cost function is the average loss function over all training examples or across the batch in the case of mini-batch gradient descent.
+
+  Some examples of loss function: mean squared error, binary cross entropy, etc. Whereas, the cost function is the average of the above loss functions over training examples.
 
 
 ## 2. PCA
