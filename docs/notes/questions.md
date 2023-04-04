@@ -386,20 +386,19 @@
   
 * **What are the methods for high dimensional feature matrix?**
 
-
-    * Use <u>Lasso regression</u> to reduce the coefficients of some less important features to zero.
-
-
-    * Use <u>tree-based model</u> to identify important features, so the less important features can be removed.
-
-
-    * Use <u>Principle Component Analysis (PCA)</u> to condense important information to the first k principle components, then the first k PC can be used as the new feature matrix. 
+  * Use <u>Lasso regression</u> to reduce the coefficients of some less important features to zero.
+  * Use <u>tree-based model</u> to identify important features, so the less important features can be removed.
+  * Use <u>Principle Component Analysis (PCA)</u> to condense important information to the first k principle components, then the first k PC can be used as the new feature matrix. 
 
 * **What are loss functions and cost functions? What is the difference?**
 
   The loss function is the measure of the performance of the model on a single training example, whereas the cost function is the average loss function over all training examples or across the batch in the case of mini-batch gradient descent.
 
   Some examples of loss function: mean squared error, binary cross entropy, etc. Whereas, the cost function is the average of the above loss functions over training examples.
+  
+* **What is feature engineering?**
+
+  Feature engineering is a technique of boosting model's performance by creating new features from raw features.
 
 
 ## 2. PCA
