@@ -6,7 +6,8 @@
     - [Spring 2022(2)](notes/questions2.md)
     - [Spring 2022(3)](notes/questions3.md)
   - Interview Notes
-    - [ML Interview Notes](notes/MLnotes.md)
+    - [Basic ML Interview Questions](notes/MLnotes.md)
+    - [Advanced ML Interview Questions](notes/advanced_MLnotes.md)
   - DS Project Notes
     - [Preprocessing](notes/01_preprocessing.md)
     - [EDA](notes/02_eda.md)
