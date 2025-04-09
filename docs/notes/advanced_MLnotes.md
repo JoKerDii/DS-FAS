@@ -262,30 +262,212 @@
       | Decision Trees/Random Forest | No                 | Splits are scale-invariant.                                  |
       | Gradient Boosting (XGBoost)  | No (but can help)  | Generally robust, but scaling may help in some cases (e.g., linear weak learners). |
 
-6. Write the pseudocode for hyperparameter tuning and k-fold cross validation from scratch.
+6. **Write the pseudocode for hyperparameter tuning and k-fold cross validation from scratch.**
 
-7. Four assumptions of linear regression and what are the consequences if any of them is not met
+   ```
+   INPUT:
+       - X: Features
+       - y: Labels/targets
+       - model_class: A model class that can be instantiated with hyperparameters
+       - param_grid: A dictionary of hyperparameters and their candidate values
+       - k: Number of folds for cross-validation
+       - scoring_function: A function to evaluate performance (e.g., accuracy, RMSE)
+   
+   OUTPUT:
+       - best_params: Hyperparameter combination with best average score
+       - best_score: The score corresponding to best_params
+   
+   FUNCTION k_fold_cross_validation(X, y, model_class, params, k, scoring_function):
+       Split data X, y into k equal folds (shuffle before splitting)
+       scores = []
+   
+       FOR i in 1 to k:
+           validation_indices = fold i
+           training_indices = all other folds
+   
+           X_train, y_train = data[training_indices]
+           X_val, y_val = data[validation_indices]
+   
+           model = model_class(**params)
+           model.fit(X_train, y_train)
+   
+           y_pred = model.predict(X_val)
+           score = scoring_function(y_val, y_pred)
+           scores.append(score)
+   
+       RETURN mean(scores)
+   
+   FUNCTION grid_search_cv(X, y, model_class, param_grid, k, scoring_function):
+       best_score = -infinity
+       best_params = None
+   
+       FOR each combination in param_grid:
+           params = current combination
+           avg_score = k_fold_cross_validation(X, y, model_class, params, k, scoring_function)
+   
+           IF avg_score > best_score:
+               best_score = avg_score
+               best_params = params
+   
+       RETURN best_params, best_score
+   
+   # Example usage (outside function scope)
+   best_params, best_score = grid_search_cv(X, y, MyModel, param_grid, k=5, scoring_function=accuracy)
+   ```
 
-8. How to detect multi-colinearity when performing linear regression?
+7. **What are the four assumptions of linear regression and what are the consequences if any of them is not met?**
 
-9. Techniques to make your model robust to outliers
+   Linear regression has four key assumptions, and violating any of them can lead to problems like biased estimates, inefficient predictions, or invalid statistical inferences.
 
-   * Data: 1) remove or cap, 2) log transformation
-   * Model: 1) tree based model or boosting model, 2) regularization, 3) better metrics e.g. MAE rather than MSE
+   To check the assumptions of linear regression, you need to fit the model first because most of the assumptions are about the residuals, which are only available *after* making predictions.
 
-10. Methods to reduce dimensionality but maintain critical data information within feature matrix
+   | Assumption                    | Description                                                  | Consequences of Violation                                    |
+   | ----------------------------- | ------------------------------------------------------------ | ------------------------------------------------------------ |
+   | **1. Linearity**              | The relationship between the independent variables and the dependent variable is linear. | - Model underfits the data.- Predictions are systematically off.- Coefficients don't reflect actual relationships. |
+   | **2. Independence**           | Residuals (errors) are independent — no autocorrelation.     | - Common in time series data.- Standard errors are underestimated → overconfident p-values and confidence intervals.- Inflated Type I errors. |
+   | **3. Homoscedasticity**       | Constant variance of residuals across all levels of predictors. | - If violated (i.e., heteroscedasticity), the model gives inefficient estimates.- Standard errors become unreliable → misleading hypothesis tests. |
+   | **4. Normality of Residuals** | Residuals should be normally distributed (especially for inference). | - Confidence intervals and hypothesis tests become invalid, especially in small samples.- Less impact on prediction, more on inference. |
 
-   * PCA; Lasso Regression; Tree-based model
+   we can use residual diagnostics to check assumptions:
 
-11. How is the coefficient in logistic regression estimated by Maximum Likelihood Estimation, and how is the loss function derived?
+   | Assumption           | What to check/plot                                           |
+   | -------------------- | ------------------------------------------------------------ |
+   | **Linearity**        | Plot residuals vs. predicted values — should not show patterns. |
+   | **Independence**     | Plot residuals over time/order — should not show trends. Use Durbin-Watson test for autocorrelation. |
+   | **Homoscedasticity** | Same residuals vs. predicted plot — should show constant spread (no "fan" or "cone" shape). |
+   | **Normality**        | Histogram or Q-Q plot of residuals — should look roughly normal. |
 
-12. How does decision tree classifier work? How does a decision tree classifier decide on its split (entropy, purity, information gain)? What about decision tree regressor - how does split determined? 
+8. **How to detect multi-colinearity when performing linear regression?**
 
-13. Is decision tree greedy or not? what are the pros and cons? What's the solution of the cons?
+   Multicollinearity happens when two or more independent variables are highly correlated with each other. This makes it hard for the model to isolate the effect of each variable, leading to:
 
-14. How Gini-Index is calculated in a DT classifier?
+   - Unstable coefficients (they change a lot with small changes in data)
+   - Inflated standard errors
+   - Misleading p-values
 
-15. When evaluating model with imbalanced data, why precision and recall are better choice than ROC curve?
+   Main ways of detecting multicollinearity:
+
+   1. correlation matrix: Check pairwise correlations between independent variables. If any correlation coefficient is close to +1 or -1 → potential multicollinearity.
+
+   2. variance inflation factor (VIF): VIF quantifies how much the variance of a coefficient is inflated due to multicollinearity. 
+
+      Rule of thumb: VIF > 5 → moderate multicollinearity; VIF > 10 → high multicollinearity (serious problem).
+
+   How to fix multicollinearity:
+
+   - Drop one of the correlated variables.
+   - Combine them (e.g., PCA, feature engineering).
+   - Use models that are less sensitive to multicollinearity (like tree-based models).
+
+9. **Techniques to make your model robust to outliers** vs **Techniques to make your model robust to skewness?**
+
+   Outliers and skewness are related but distinct challenges in statistical modeling and machine learning. 
+
+   **Techniques for Outlier Robustness**
+
+   1. Robust estimation methods:
+      - Median instead of mean
+      - Huber loss or quantile regression
+      - RANSAC (Random Sample Consensus)
+      - M-estimators that downweight extreme observations
+   2. Data transformation/preprocessing:
+      - Winsorization (capping extreme values)
+      - Removing statistical outliers (e.g., beyond 3 standard deviations)
+      - Using robust scaling (based on median and IQR instead of mean and standard deviation)
+   3. Model choices:
+      - Decision trees and tree-based models (inherently resistant to outliers)
+      - Support Vector Machines with appropriate kernels
+      - Using ensemble methods like Random Forest or Gradient Boosting
+   4. Regularization to prevent the model from fitting to outliers
+
+   **Techniques for Skewness Robustness**
+
+   Skewness refers to asymmetry in the distribution of data. To handle skewness:
+
+   1. Data transformations:
+      - Log transformation for right-skewed data
+      - Square root transformation for moderate right skewness
+      - Box-Cox or Yeo-Johnson transformations
+      - Exponential transformation for left-skewed data
+   2. Distribution-specific models:
+      - Using appropriate probability distributions (e.g., gamma, Poisson, negative binomial)
+      - Generalized linear models with appropriate link functions
+   3. Quantile regression to model different parts of the distribution
+   4. Nonparametric methods that don't make distributional assumptions:
+      - Kernel density estimation
+      - Rank-based statistical methods
+
+10. **Methods to reduce dimensionality but maintain critical data information within feature matrix?**
+
+    * Linear methods: PCA, LDA
+    * Nonlinear methods: t-SNE, UMAP
+    * Feature selection methods: Lasso or Ridge (L1/L2 reg), tree based model feature importance
+
+11. **How is the coefficient in logistic regression estimated by Maximum Likelihood Estimation, and how is the loss function derived?**
+
+    Logistic regression coefficients are estimated through Maximum Likelihood Estimation (MLE), which finds the parameters that make the observed data most probable. 
+
+    **Probability Model in Logistic Regression**
+
+    In logistic regression, we model the probability of a binary outcome (y = 1) as:
+    $$
+    P(y = 1|x) = σ(β_0 + β_1x_1 + ... + β_px_p) = σ(β^Tx)
+    $$
+    Where:
+
+    - $σ$ is the sigmoid function: $σ(z) = 1/(1 + e^{-z})$
+    - $β$ represents the coefficient vector
+    - $x$ represents the feature vector
+
+    **Maximum Likelihood Estimation Process**
+
+    1. **Likelihood Function Construction**: For a dataset with $n$ independent observations, the likelihood is:
+       $$
+       L(β) = \prod_{i=1}^n P(y = 1|x_i)^y_i \times (1 - P(y = 1|x_i))^{1-y_i}
+       $$
+       This gives the probability of observing our entire dataset given parameters $\beta$.
+
+    2. **Log-Likelihood Transformation**: Taking the natural log converts the product to a sum, which is easier to work with:
+       $$
+       \ell (β) = \prod_{i=1}^n [y_i \log(P(y = 1|x_i)) + (1-y_i) \log(1 - P(y = 1|x_i))]
+       $$
+       Or, using the sigmoid function:
+       $$
+       \ell(\beta) = \prod_{i=1}^n [y_i \log(\sigma(\beta^T x)i) + (1-y_i) \log(1 - \sigma(\beta^T x_i))]
+       $$
+
+    3. **Maximizing the Log-Likelihood**: We want to find $\beta$ that maximizes $\ell(\beta)$, which is equivalent to minimizing $-\ell(\beta)$.
+
+    **Loss Function Derivation**
+
+    The loss function in logistic regression is the negative log-likelihood:
+    $$
+    Loss(\beta) = -\ell(\beta) = -\prod_{i=1}^n [y_i \log(\sigma(\beta^T x_i)) + (1-y_i) \log(1 - \sigma (\beta^T x_i))]
+    $$
+    This is the binary cross-entropy loss, which penalizes confident incorrect predictions more heavily than uncertain ones.
+
+    **Finding the Optimal Coefficients**
+
+    Since the loss function has no closed-form solution:
+
+    1. We use numerical optimization techniques, usually gradient descent:
+       - Calculate the gradient of the loss with respect to $\beta$
+       - Update $\beta$ iteratively: $\beta_{new} = \beta_{old} - \alpha \times \nabla Loss(\beta)$
+       - Continue until convergence (gradient becomes approximately zero)
+    2. The gradient of the log-likelihood is: $\nabla \ell(\beta) = \prod_{i=1}^n x_i(y_i - \sigma(\beta^T x_i))$
+    3. At convergence, the estimated coefficients $\hat{\beta}$ represent the maximum likelihood estimate.
+
+    This process yields coefficients that best explain the observed relationship between features and outcomes in your dataset.
+
+11. **How does decision tree classifier work mathmetically? How does a decision tree classifier decide on its split (entropy, purity, information gain)? What about decision tree regressor - how does split determined?** 
+
+    
+
+12. Is decision tree greedy or not? what are the pros and cons? What's the solution of the cons?
+
+13. How Gini-Index is calculated in a DT classifier?
+
+14. When evaluating model with imbalanced data, why precision and recall are better choice than ROC curve?
 
     ROC (TPR vs FPR)
 
@@ -293,39 +475,39 @@
 
     TPR = TP / (FN + TP); FPR = FP / (TN + FP)
 
-16. Difference between boosting and bagging?
+15. Difference between boosting and bagging?
 
-17. Random forest is a modified version of bagging algorithm, what is the one unique step that's different from bagging?
+16. Random forest is a modified version of bagging algorithm, what is the one unique step that's different from bagging?
 
     Bagging has one problem "multi-colinearity". Random forest introduces stochasticity by bootstrapping features.
 
-18. Why transformer is better than Recurrent Neural Network?
+17. Why transformer is better than Recurrent Neural Network?
 
-19. Why BoW, TFIDF are worse than word2vec, Glove, and BERT? What does semantic similarity mean - describe it in high dim space.
+18. Why BoW, TFIDF are worse than word2vec, Glove, and BERT? What does semantic similarity mean - describe it in high dim space.
 
-20. How does PCA work? How to calculate principle components mathmetically? What is the assumption of PCA and when it does not met? If assumption is not met, what are the alternatives?
+19. How does PCA work? How to calculate principle components mathmetically? What is the assumption of PCA and when it does not met? If assumption is not met, what are the alternatives?
 
-21. Describe how would you plot ROC curve from scratch without using python package?
+20. Describe how would you plot ROC curve from scratch without using python package?
 
-22. How do you choose different kernels when building a SVM model?
+21. How do you choose different kernels when building a SVM model?
 
-23. Best practices of pruning a decision tree?
+22. Best practices of pruning a decision tree?
 
-24. What are the differences between Adaboost and Gradient Boosting?
+23. What are the differences between Adaboost and Gradient Boosting?
 
-25. Given 2 observations and 5 features, how do you calculate the euclidean distance?
+24. Given 2 observations and 5 features, how do you calculate the euclidean distance?
 
-26. How does (L2) regularization work in Gradient Boosting mathematically?
+25. How does (L2) regularization work in Gradient Boosting mathematically?
 
-27. How does k-means work step by step? How to find the best k? If you run k-means multiple times, do you expect every clustering result is the same and why?
+26. How does k-means work step by step? How to find the best k? If you run k-means multiple times, do you expect every clustering result is the same and why?
 
     Elbow plot and Silhouette plot.
 
-28. Definition of conditional probability and Bayes Theorem?
+27. Definition of conditional probability and Bayes Theorem?
 
-29. How does kNN imputation work for imputing missing values step by step?
+28. How does kNN imputation work for imputing missing values step by step?
 
-30. **Is the loss function of Neural Network convex or not and why? if not convex, what are the consequences? What's the solution for that? Why SGD can also reduce overfitting as well?**
+29. **Is the loss function of Neural Network convex or not and why? if not convex, what are the consequences? What's the solution for that? Why SGD can also reduce overfitting as well?**
 
     **1. Convexity of the Neural Network Loss Function**  
 
@@ -370,20 +552,20 @@
     - **Solutions:** SGD variants, good initialization, batch norm, skip connections.  
     - **SGD reduces overfitting** via noise, flat minima preference, and early stopping.  
 
-31. ANN training loss is not decreasing, what are the possible reasons?
+30. ANN training loss is not decreasing, what are the possible reasons?
 
     * underfitting due to large regularization; large learning rate; improper initiation e.g. init weight is 0; vanishing gradient
 
-32. What is the loss function of a Neural Network based multi-class classifier? why it is a good loss function?
+31. What is the loss function of a Neural Network based multi-class classifier? why it is a good loss function?
 
     Categorical cross entropy (one-hot encoded classes); sparse categorical cross entropy (label / integer encoded classes)
 
-33. What is the loss function of a XGBoost based multi-class classifier? why it's a good loss function? how is the mlogloss calculated in a binary classifer? what does the LOG penalize heavily on? why mlogloss is better than accuracy?
+32. What is the loss function of a XGBoost based multi-class classifier? why it's a good loss function? how is the mlogloss calculated in a binary classifer? what does the LOG penalize heavily on? why mlogloss is better than accuracy?
 
     mlogloss - multi-class log loss.
 
     Measure how well model predicts probabilities for each class; penalize overconfidence in incorrect predictions; align with softmax objective.
 
-34. How does XGBoost enable multiclass classification? 
+33. How does XGBoost enable multiclass classification? 
 
     1 tree per class per iteration; gradient descent; aggregation across trees - summing contribution from all trees for each class and applying softmax
