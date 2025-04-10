@@ -461,9 +461,110 @@
 
 11. **How does decision tree classifier work mathmetically? How does a decision tree classifier decide on its split (entropy, purity, information gain)? What about decision tree regressor - how does split determined?** 
 
-    
+    At each **node** of a decision tree classifier, the algorithm chooses a **feature** and a **threshold** that best splits the data to improve the classification performance. The key idea is to split in a way that maximizes **"purity"** of the resulting child nodes.
 
-12. Is decision tree greedy or not? what are the pros and cons? What's the solution of the cons?
+    1. **Entropy (Measure of Impurity)**
+        For a node with class probabilities $p_1, p_2, ..., p_k$ over $k$ classes:
+       $$
+       H(S) = - \sum_{i=1}^{k} p_i \log_2(p_i)
+       $$
+       If a node contains only one class, entropy is 0 (pure). If it's evenly mixed, entropy is highest.
+
+    2. **Information Gain (How Much Entropy Reduces)**
+        Information gain measures the **reduction in entropy** after the split.
+       $$
+       IG(S, A) = H(S) - \sum_{v \in \text{values}(A)} \frac{|S_v|}{|S|} H(S_v)
+       $$
+       Where:
+
+       - $S$ is the parent node set,
+       - $S_v$ are subsets after splitting on feature $A$,
+       - $|S_v| / |S|$ is the weight (proportion of samples in that subset).
+
+       The feature and threshold with **highest information gain** are selected.
+
+    3. **Gini Impurity (Alternative to Entropy)**
+        Often used in CART (Classification and Regression Trees):
+       $$
+       Gini(S) = 1 - \sum_{i=1}^k p_i^2
+       $$
+       Gini is easier to compute and behaves similarly to entropy. CART minimizes the **Gini impurity** of children instead of maximizing information gain.
+
+    In regression trees, the target is **continuous**, so we need a different criterion for splitting.
+
+    1. **Variance / Mean Squared Error (MSE)**
+        The goal is to split the data such that the **variance (or squared error) in each subset is minimized**.
+
+       For a node with target values $y_1, y_2, ..., y_n$:
+       $$
+       MSE(S) = \frac{1}{n} \sum_{i=1}^{n} (y_i - \bar{y})^2
+       $$
+
+    2. **Split Criterion (Variance Reduction)**
+        Like information gain, the split is chosen to minimize the weighted average MSE of the children.
+       $$
+       \text{Gain} = MSE(S) - \left( \frac{|S_L|}{|S|} MSE(S_L) + \frac{|S_R|}{|S|} MSE(S_R) \right)
+       $$
+       So, the best split is the one that **reduces variance the most**.
+
+    **Comparison:**
+
+    | Type           | Split Based On             | Metric Used              |
+    | -------------- | -------------------------- | ------------------------ |
+    | **Classifier** | Class label distribution   | Entropy, Info Gain, Gini |
+    | **Regressor**  | Target value (real-valued) | Variance / MSE           |
+
+12. **Is decision tree greedy or not? what are the pros and cons? What's the solution of the cons?**
+
+    Yes. Decision trees build the tree **top-down** using a **greedy** strategy:
+
+    - At each node, they choose the **best immediate split** (based on entropy, Gini, or MSE),
+    - Without considering how that decision will impact the overall tree structure **in the long run**.
+
+    This is why they don’t guarantee the globally optimal tree.
+
+    **Pros of Decision Trees**
+
+    1. **Easy to Understand & Interpret**
+        You can visualize the tree — it's like a set of if-else rules.
+    2. **No Feature Scaling Needed**
+        Works fine with raw data (no need for normalization or standardization).
+    3. **Handles Both Numerical & Categorical Data**
+        Can work with mixed types easily.
+    4. **Non-parametric**
+        No assumptions about data distribution.
+    5. **Can Handle Non-linear Relationships**
+        Naturally model interactions between features.
+
+    **Cons of Decision Trees**
+
+    1. **Greedy & Myopic**
+        They pick splits that are best **locally**, not necessarily globally.
+    2. **Overfitting**
+        Especially on small datasets or noisy data, they can grow too deep and memorize training data.
+    3. **Unstable**
+        Small changes in data can lead to very different tree structures (high variance).
+    4. **Bias Toward Features with More Levels**
+        Features with many unique values (e.g., IDs) might dominate splits.
+
+    **Solutions to the Cons**
+
+    1. **Pruning (Post-Pruning / Pre-Pruning)**
+
+       - **Pre-Pruning:** Stop tree growth early using thresholds like `max_depth`, `min_samples_split`, or `min_impurity_decrease`.
+
+       - **Post-Pruning:** Build the full tree and then remove branches that don't improve validation performance.
+
+    2. **Ensembles:**
+
+       - **Random Forest:** Averages predictions from multiple trees trained on random subsets → reduces variance & overfitting.
+
+       - **Gradient Boosted Trees (e.g., XGBoost, LightGBM):** Sequentially adds trees to correct previous errors → more accurate and robust.
+
+    3. **Feature Selection / Engineering**
+       - Removing irrelevant or high-cardinality features can reduce overfitting.
+    4. **Cross-Validation**
+       - Helps select optimal tree depth or pruning level to generalize better.
 
 13. How Gini-Index is calculated in a DT classifier?
 
